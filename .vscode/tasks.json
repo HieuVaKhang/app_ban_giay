@@ -1,0 +1,20 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation ${ten_module} the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Tạo module flutter",
+            "type": "shell",
+            "command": "mkdir ./lib/module/${input:ten_module}; mkdir ./lib/module/${input:ten_module}/model; mkdir ./lib/module/${input:ten_module}/provider; mkdir ./lib/module/${input:ten_module}/repository; mkdir ./lib/module/${input:ten_module}/screen; mkdir ./lib/module/${input:ten_module}/screen/widget; New-item -Path ./lib/module/${input:ten_module} -Name \"${input:ten_module}_index.dart\" -ItemType \"file\"; New-item -Path ./lib/module/${input:ten_module}/screen -Name \"${input:ten_module}_screen.dart\" -ItemType \"file\"",
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "ten_module",
+            "type": "promptString",
+            "description": "Tên module"
+        }
+    ]
+}
