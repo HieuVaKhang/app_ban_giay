@@ -19,6 +19,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final router = GoRouter(
+      initialLocation: initRouter,
       routes: danhsachRoute,
     );
     return MaterialApp.router(
