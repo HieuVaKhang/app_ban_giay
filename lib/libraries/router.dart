@@ -8,4 +8,4 @@ final List<GoRoute> danhsachRoute = [
   Func.addGoRouter(const CartIndex()),
 ];
 
-const String initRouter = "/";
+const String initRouter = "/cart";
