@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class Func {
+  static String formatPrice(number,
+      {String locale = 'vi', String unit = 'đ'}) {
+    final formatCurrency = NumberFormat.currency(locale: locale, symbol: unit);
+    return formatCurrency.format(number);
+  }
+
   static String convertName(Key? key) {
     String strReturn = key.toString();
     strReturn = strReturn.replaceAll("[<'", "");
@@ -34,7 +41,8 @@ class Func {
         routes: submodules);
   }
 
-  static CustomTransitionPage effectTransitionFade(GoRouterState state, Widget child) {
+  static CustomTransitionPage effectTransitionFade(
+      GoRouterState state, Widget child) {
     return CustomTransitionPage(
       key: state.pageKey,
       child: child,
