@@ -35,6 +35,9 @@ class CartScreen extends StatelessWidget {
                         price: 300000,
                         photo:
                             "https://cdn.pixabay.com/photo/2017/12/03/18/04/christmas-balls-2995437_960_720.jpg"),
+                    showCartCount: true,
+                    showCartCountEdit: true,
+                    showDelete: true,
                   ),
                 ),
               ),
