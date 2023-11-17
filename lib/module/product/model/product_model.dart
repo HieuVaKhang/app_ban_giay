@@ -11,6 +11,10 @@ class ProductModel {
   final double? salePrice;
   final String? description;
   final String? photo;
+  final String? colorId;
+  final String? colorName;
+  final String? sizeId;
+  final String? sizeName;
   ProductModel({
     this.id,
     this.idCategory,
@@ -21,6 +25,10 @@ class ProductModel {
     this.salePrice,
     this.description,
     this.photo,
+    this.colorId,
+    this.colorName,
+    this.sizeId,
+    this.sizeName,
   });
 
   ProductModel copyWith({
@@ -33,6 +41,10 @@ class ProductModel {
     double? salePrice,
     String? description,
     String? photo,
+    String? colorId,
+    String? colorName,
+    String? sizeId,
+    String? sizeName,
   }) {
     return ProductModel(
       id: id ?? this.id,
@@ -44,6 +56,10 @@ class ProductModel {
       salePrice: salePrice ?? this.salePrice,
       description: description ?? this.description,
       photo: photo ?? this.photo,
+      colorId: colorId ?? this.colorId,
+      colorName: colorName ?? this.colorName,
+      sizeId: sizeId ?? this.sizeId,
+      sizeName: sizeName ?? this.sizeName,
     );
   }
 
@@ -58,6 +74,10 @@ class ProductModel {
       'salePrice': salePrice,
       'description': description,
       'photo': photo,
+      'colorId': colorId,
+      'colorName': colorName,
+      'sizeId': sizeId,
+      'sizeName': sizeName,
     };
   }
 
@@ -72,6 +92,10 @@ class ProductModel {
       salePrice: map['salePrice'] != null ? map['salePrice'] as double : null,
       description: map['description'] != null ? map['description'] as String : null,
       photo: map['photo'] != null ? map['photo'] as String : null,
+      colorId: map['colorId'] != null ? map['colorId'] as String : null,
+      colorName: map['colorName'] != null ? map['colorName'] as String : null,
+      sizeId: map['sizeId'] != null ? map['sizeId'] as String : null,
+      sizeName: map['sizeName'] != null ? map['sizeName'] as String : null,
     );
   }
 
@@ -81,7 +105,7 @@ class ProductModel {
 
   @override
   String toString() {
-    return 'ProductModel(id: $id, idCategory: $idCategory, idMaterial: $idMaterial, idGender: $idGender, name: $name, price: $price, salePrice: $salePrice, description: $description, photo: $photo)';
+    return 'ProductModel(id: $id, idCategory: $idCategory, idMaterial: $idMaterial, idGender: $idGender, name: $name, price: $price, salePrice: $salePrice, description: $description, photo: $photo, colorId: $colorId, colorName: $colorName, sizeId: $sizeId, sizeName: $sizeName)';
   }
 
   @override
@@ -97,7 +121,11 @@ class ProductModel {
       other.price == price &&
       other.salePrice == salePrice &&
       other.description == description &&
-      other.photo == photo;
+      other.photo == photo &&
+      other.colorId == colorId &&
+      other.colorName == colorName &&
+      other.sizeId == sizeId &&
+      other.sizeName == sizeName;
   }
 
   @override
@@ -110,6 +138,10 @@ class ProductModel {
       price.hashCode ^
       salePrice.hashCode ^
       description.hashCode ^
-      photo.hashCode;
+      photo.hashCode ^
+      colorId.hashCode ^
+      colorName.hashCode ^
+      sizeId.hashCode ^
+      sizeName.hashCode;
   }
 }

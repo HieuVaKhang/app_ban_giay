@@ -127,9 +127,10 @@ class ProductItemWidget extends StatelessWidget {
                   barrierColor: Color.fromARGB((0.7 * 255).round(), 0, 0, 0),
                   backgroundColor: Colors.transparent,
                   isScrollControlled: true,
-                  
                   context: context,
-                  builder: (context) => CartBottomSheetModalWidget(model: model,),
+                  builder: (context) => CartBottomSheetModalWidget(
+                    model: model,
+                  ),
                 ),
                 child: Container(
                   width: 30,
@@ -146,7 +147,54 @@ class ProductItemWidget extends StatelessWidget {
                   ),
                 ),
               ),
-            )
+            ),
+          if (model.colorName != null || model.sizeName != null)
+            Positioned(
+                top: 5,
+                left: 5,
+                right: 0,
+                child: LayoutBuilder(builder: (context, constraints) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (model.colorName != null)
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 5),
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            color: Color(0xffF15E2C),
+                          ),
+                          width: constraints.maxWidth / 2,
+                          padding: const EdgeInsets.all(10),
+                          child: Text(
+                            model.colorName ?? "",
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(color: Colors.white, fontSize: 10),
+                          ),
+                        ),
+                      if (model.colorName != null)
+                        Container(
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            color: Color(0xffF15E2C),
+                          ),
+                          width: constraints.maxWidth / 2,
+                          padding: const EdgeInsets.all(10),
+                          child: Text(
+                            model.sizeName ?? "",
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(color: Colors.white, fontSize: 10),
+                          ),
+                        ),
+                    ],
+                  );
+                }))
         ],
       ),
     );

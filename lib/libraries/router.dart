@@ -14,4 +14,4 @@ final List<GoRoute> danhsachRoute = [
   Func.addGoRouter(const PaymentMethodIndex()),
 ];
 
-const String initRouter = "/payment";
+const String initRouter = "/cart";

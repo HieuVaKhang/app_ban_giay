@@ -34,6 +34,8 @@ class CartScreen extends StatelessWidget {
                   child: ProductItemWidget(
                     model: ProductModel(
                         name: "Tên sản phẩm",
+                        colorName: "Đỏ",
+                        sizeName: "XXL",
                         salePrice: 200000,
                         price: 300000,
                         photo:
