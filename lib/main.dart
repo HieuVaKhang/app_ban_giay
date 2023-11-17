@@ -26,6 +26,7 @@ class MainApp extends StatelessWidget {
       routes: danhsachRoute,
     );
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       routerConfig: router,
     );
   }

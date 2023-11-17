@@ -10,6 +10,7 @@ class ProductModel {
   final double? price;
   final double? salePrice;
   final String? description;
+  final String? photo;
   ProductModel({
     this.id,
     this.idCategory,
@@ -19,6 +20,7 @@ class ProductModel {
     this.price,
     this.salePrice,
     this.description,
+    this.photo,
   });
 
   ProductModel copyWith({
@@ -30,6 +32,7 @@ class ProductModel {
     double? price,
     double? salePrice,
     String? description,
+    String? photo,
   }) {
     return ProductModel(
       id: id ?? this.id,
@@ -40,6 +43,7 @@ class ProductModel {
       price: price ?? this.price,
       salePrice: salePrice ?? this.salePrice,
       description: description ?? this.description,
+      photo: photo ?? this.photo,
     );
   }
 
@@ -53,6 +57,7 @@ class ProductModel {
       'price': price,
       'salePrice': salePrice,
       'description': description,
+      'photo': photo,
     };
   }
 
@@ -69,6 +74,7 @@ class ProductModel {
       salePrice: map['salePrice'] != null ? map['salePrice'] as double : null,
       description:
           map['description'] != null ? map['description'] as String : null,
+      photo: map['photo'] != null ? map['photo'] as String : null,
     );
   }
 
@@ -79,7 +85,7 @@ class ProductModel {
 
   @override
   String toString() {
-    return 'ProductModel(id: $id, idCategory: $idCategory, idMaterial: $idMaterial, idGender: $idGender, name: $name, price: $price, salePrice: $salePrice, description: $description)';
+    return 'ProductModel(id: $id, idCategory: $idCategory, idMaterial: $idMaterial, idGender: $idGender, name: $name, price: $price, salePrice: $salePrice, description: $description, photo: $photo)';
   }
 
   @override
@@ -93,7 +99,8 @@ class ProductModel {
         other.name == name &&
         other.price == price &&
         other.salePrice == salePrice &&
-        other.description == description;
+        other.description == description &&
+        other.photo == photo;
   }
 
   @override
@@ -105,6 +112,7 @@ class ProductModel {
         name.hashCode ^
         price.hashCode ^
         salePrice.hashCode ^
-        description.hashCode;
+        description.hashCode ^
+        photo.hashCode;
   }
 }
