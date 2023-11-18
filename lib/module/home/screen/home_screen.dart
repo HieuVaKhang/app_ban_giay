@@ -1,14 +1,14 @@
-import 'dart:ffi';
 import 'package:app_ban_giay/libraries/function.dart';
 import 'package:app_ban_giay/module/cart/cart_index.dart';
 import 'package:app_ban_giay/module/product/model/product_model.dart';
 import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
 import 'package:app_ban_giay/module/news/model/news_model.dart';
 import 'package:app_ban_giay/module/news/screen/widget/news_item_widget.dart';
+import 'package:app_ban_giay/module/user/screen/register_screen.dart';
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:go_router/go_router.dart';
 
 final List<String> imageList = [
   "https://ananas.vn/wp-content/uploads/Web1920-1.jpeg",
@@ -65,6 +65,8 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: InkWell(
+              onTap: () =>
+                  context.push(Func.convertName(const CartIndex().key)),
               child: Stack(children: [
                 Center(
                   child: Image.asset('assets/images/icon_cart.png'),
@@ -89,13 +91,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           )
         ],
-      )),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [],
-        ),
       ),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,

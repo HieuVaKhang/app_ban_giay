@@ -1,4 +1,7 @@
+import 'package:app_ban_giay/libraries/function.dart';
+import 'package:app_ban_giay/module/home/home_index.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class PaymentSuccessDialogWidget extends StatelessWidget {
   const PaymentSuccessDialogWidget({Key? key}) : super(key: key);
@@ -37,7 +40,7 @@ class PaymentSuccessDialogWidget extends StatelessWidget {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(bottom: 5),
+            margin: const EdgeInsets.only(bottom: 5),
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.horizontal(
                   left: Radius.circular(60), right: Radius.circular(60)),
@@ -65,6 +68,8 @@ class PaymentSuccessDialogWidget extends StatelessWidget {
               color: Color(0xffE7E7E7),
             ),
             child: InkWell(
+              onTap: () =>
+                  context.push(Func.convertName(const HomeIndex().key)),
               splashColor: const Color.fromARGB(255, 231, 231, 231),
               child: Container(
                 padding:
