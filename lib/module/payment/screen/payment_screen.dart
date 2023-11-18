@@ -68,7 +68,7 @@ class PaymentScreen extends StatelessWidget {
                             salePrice: 200000,
                             price: 300000,
                             photo:
-                                "https://cdn.pixabay.com/photo/2017/12/03/18/04/christmas-balls-2995437_960_720.jpg"),
+                                "https://ananas.vn/wp-content/uploads/Pro_AV00165_1-500x500.jpeg"),
                         showCartCount: true,
                       ),
                     ),
