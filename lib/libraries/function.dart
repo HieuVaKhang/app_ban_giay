@@ -3,8 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class Func {
-  static String formatPrice(number,
-      {String locale = 'vi', String unit = 'đ'}) {
+    static String formatPrice(number, {String locale = 'vi', String unit = 'đ'}) {
     final formatCurrency = NumberFormat.currency(locale: locale, symbol: unit);
     return formatCurrency.format(number);
   }

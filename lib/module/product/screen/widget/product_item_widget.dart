@@ -41,6 +41,8 @@ class ProductItemWidget extends StatelessWidget {
                 model.photo ?? "",
                 fit: BoxFit.cover,
                 height: 160,
+                width: double.infinity,
+
               ),
               Text(
                 model.name ?? "",
