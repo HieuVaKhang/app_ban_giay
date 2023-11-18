@@ -30,12 +30,16 @@ class MainApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          textTheme: GoogleFonts.montserratTextTheme(
-            Theme.of(context).textTheme,
-          ),
-          appBarTheme:
-              const AppBarTheme(backgroundColor: Colors.white, elevation: 0),
-          scaffoldBackgroundColor: Colors.white),
+        textTheme: GoogleFonts.montserratTextTheme(
+          Theme.of(context).textTheme,
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          iconTheme: IconThemeData(color: Color(0xff222222), size: 24)
+        ),
+        scaffoldBackgroundColor: Colors.white,
+      ),
       routerConfig: router,
     );
   }
