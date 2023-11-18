@@ -1,6 +1,9 @@
+import 'package:app_ban_giay/libraries/function.dart';
+import 'package:app_ban_giay/module/payment/payment_index.dart';
 import 'package:app_ban_giay/module/product/model/product_model.dart';
 import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -31,10 +34,15 @@ class CartScreen extends StatelessWidget {
                   child: ProductItemWidget(
                     model: ProductModel(
                         name: "Tên sản phẩm",
+                        colorName: "Đỏ",
+                        sizeName: "XXL",
                         salePrice: 200000,
                         price: 300000,
                         photo:
                             "https://cdn.pixabay.com/photo/2017/12/03/18/04/christmas-balls-2995437_960_720.jpg"),
+                    showCartCount: true,
+                    showCartCountEdit: true,
+                    showDelete: true,
                   ),
                 ),
               ),
@@ -65,6 +73,7 @@ class CartScreen extends StatelessWidget {
                   color: Color(0xffF15E2C), fontSize: 16, height: 25 / 16),
             ),
             InkWell(
+              onTap: () => context.push(Func.convertName(const PaymentIndex().key)),
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 52, vertical: 12),
