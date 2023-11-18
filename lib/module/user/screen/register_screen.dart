@@ -9,6 +9,7 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Form(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Image(

@@ -10,6 +10,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Form(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           const Image(
@@ -31,7 +32,10 @@ class LoginScreen extends StatelessWidget {
               keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
                 labelText: "Email",
-                prefixIcon: Icon(Icons.mail),
+                prefixIcon: Icon(
+                  Icons.mail,
+                  color: Color(0xff222222),
+                ),
                 enabledBorder: OutlineInputBorder(
                   borderSide:
                       BorderSide(color: Color.fromARGB(0, 33, 149, 243)),
@@ -52,7 +56,10 @@ class LoginScreen extends StatelessWidget {
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: "Mật khẩu",
-                prefixIcon: Icon(Icons.lock),
+                prefixIcon: Icon(
+                  Icons.lock,
+                  color: Color(0xff222222),
+                ),
                 enabledBorder: OutlineInputBorder(
                   borderSide:
                       BorderSide(color: Color.fromARGB(0, 33, 149, 243)),
