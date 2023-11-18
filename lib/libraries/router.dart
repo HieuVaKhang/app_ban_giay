@@ -6,12 +6,15 @@ import 'package:app_ban_giay/module/payment_method/payment_method_index.dart';
 import 'package:app_ban_giay/module/user_info/user_info_index.dart';
 import 'package:go_router/go_router.dart';
 
+import '../module/user/user_index.dart';
+
 final List<GoRoute> danhsachRoute = [
   Func.addGoRouter(const HomeIndex()),
   Func.addGoRouter(const CartIndex()),
   Func.addGoRouter(const PaymentIndex()),
   Func.addGoRouter(const UserInfoIndex()),
   Func.addGoRouter(const PaymentMethodIndex()),
+Func.addGoRouter(const UserIndex()),
 ];
 
 const String initRouter = "/cart";
