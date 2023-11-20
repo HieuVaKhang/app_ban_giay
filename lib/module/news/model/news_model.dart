@@ -6,11 +6,13 @@ class NewsModel {
   final String? name;
   final String? description;
   final String? content;
+  final String? photo;
   NewsModel({
     this.id,
     this.name,
     this.description,
     this.content,
+    this.photo,
   });
 
   NewsModel copyWith({
@@ -18,12 +20,14 @@ class NewsModel {
     String? name,
     String? description,
     String? content,
+    String? photo,
   }) {
     return NewsModel(
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
       content: content ?? this.content,
+      photo: photo ?? this.photo,
     );
   }
 
@@ -33,6 +37,7 @@ class NewsModel {
       'name': name,
       'description': description,
       'content': content,
+      'photo': photo,
     };
   }
 
@@ -43,6 +48,7 @@ class NewsModel {
       description:
           map['description'] != null ? map['description'] as String : null,
       content: map['content'] != null ? map['content'] as String : null,
+      photo: map['photo'] != null ? map['photo'] as String : null,
     );
   }
 
@@ -53,7 +59,7 @@ class NewsModel {
 
   @override
   String toString() {
-    return 'NewsModel(id: $id, name: $name, description: $description, content: $content)';
+    return 'NewsModel(id: $id, name: $name, description: $description, content: $content, photo: $photo)';
   }
 
   @override
@@ -63,7 +69,8 @@ class NewsModel {
     return other.id == id &&
         other.name == name &&
         other.description == description &&
-        other.content == content;
+        other.content == content &&
+        other.photo == photo;
   }
 
   @override
@@ -71,6 +78,7 @@ class NewsModel {
     return id.hashCode ^
         name.hashCode ^
         description.hashCode ^
-        content.hashCode;
+        content.hashCode ^
+        photo.hashCode;
   }
 }
