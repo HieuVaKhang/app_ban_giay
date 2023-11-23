@@ -101,8 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           InkWell(
-              onTap: () =>
-                  context.push(Func.convertName(const HomeIndex().key)),
+              onTap: _SignIn,
               child: Container(
                 margin: const EdgeInsets.only(top: 20, bottom: 20),
                 alignment: Alignment.center,
