@@ -2,6 +2,9 @@ import 'dart:math';
 
 import 'package:app_ban_giay/module/cart/cart_index.dart';
 import 'package:app_ban_giay/module/user/screen/login_screen.dart';
+import 'package:app_ban_giay/module/user/screen/welcome_screen.dart';
+import 'package:app_ban_giay/module/user/user_index.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -176,8 +179,7 @@ class UserScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   InkWell(
-                      onTap: () =>
-                          context.push(Func.convertName(const LoginScreen().key)),
+                      onTap: () =>  context.push(Func.convertName(const UserIndex().key)),
                       child: const Text(
                         'Đăng xuất',
                         style: TextStyle(fontSize: 13, color: Colors.black),

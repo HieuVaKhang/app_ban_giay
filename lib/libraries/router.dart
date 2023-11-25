@@ -24,4 +24,3 @@ final List<GoRoute> danhsachRoute = [
 ];
 
 const String initRouter = "/welcome";
-// const String initRouter = "/account";

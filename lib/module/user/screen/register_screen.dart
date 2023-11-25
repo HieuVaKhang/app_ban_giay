@@ -14,6 +14,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final FirebaseAuthService _auth = FirebaseAuthService();
+
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
@@ -87,28 +88,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
           InkWell(
-            onTap: _SignUp,
+              onTap: () async {
+                String email = _emailController.text;
+                String password = _passwordController.text;
+
+                User? user =
+                    await _auth.signUpWithEmailAndPassword(email, password);
+                String id = user?.uid ?? "";
+
+                if (id.isNotEmpty) {
+                  await _auth.addUser(id, "Chưa Đặt Tên", email);
+                  print('Đăng ký thành công!');
+                  context.push(Func.convertName(const LoginScreen().key));
+                } else {
+                  print('Some error occured!');
+                }
+              },
               child: Container(
-            margin: const EdgeInsets.only(top: 20, bottom: 20),
-            alignment: Alignment.center,
-            width: (MediaQuery.of(context).size.width) - 50,
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            decoration: const BoxDecoration(
-              color: Color(0xFFF15E2C),
-              borderRadius: BorderRadius.horizontal(
-                left: Radius.circular(30),
-                right: Radius.circular(30),
-              ),
-            ),
-            child: Text(
-              "Đăng ký",
-              style: TextStyle(
-                fontSize: 15,
-                height: 25 / 15,
-                color: Colors.white,
-              ),
-            ),
-          )),
+                margin: const EdgeInsets.only(top: 20, bottom: 20),
+                alignment: Alignment.center,
+                width: (MediaQuery.of(context).size.width) - 50,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                decoration: const BoxDecoration(
+                  color: Color(0xFFF15E2C),
+                  borderRadius: BorderRadius.horizontal(
+                    left: Radius.circular(30),
+                    right: Radius.circular(30),
+                  ),
+                ),
+                child: Text(
+                  "Đăng ký",
+                  style: TextStyle(
+                    fontSize: 15,
+                    height: 25 / 15,
+                    color: Colors.white,
+                  ),
+                ),
+              )),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -141,19 +157,5 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ]),
       ),
     );
-  }
-
-  void _SignUp() async {
-    String email = _emailController.text;
-    String password = _passwordController.text;
-
-    User? user = await _auth.signUpWithEmailAndPassword(email, password);
-
-    if (user != null) {
-      print('Đăng ký thành công!');
-      context.push(Func.convertName(const LoginScreen().key));
-    } else {
-      print('Some error occured!');
-    }
   }
 }
