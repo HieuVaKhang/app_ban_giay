@@ -20,5 +20,6 @@ final List<GoRoute> danhsachRoute = [
   Func.addGoRouter(const UserIndex()),
   Func.addGoRouter(const LoginScreen()),
   Func.addGoRouter(const RegisterScreen()),
+  Func.addGoRouter(const GenerateProductIndex()),
 ];
-const String initRouter = "/welcome";
+String initRouter = Func.convertName(const HomeIndex().key);

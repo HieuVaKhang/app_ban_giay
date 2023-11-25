@@ -26,28 +26,24 @@ final genProductProvider = FutureProvider<void>((ref) async {
       String nameM = "$name ${material[j]}";
       for (var z = 0; z < 2; z++) {
         String nameCa = "$nameM ${category[z]}";
+        String id = "";
+        int price = 200 + Random().nextInt(1000 - 200 + 1);
+        int salePrice = price - (200 + Random().nextInt(400 - 200 + 1));
+        final newProRef = db.collection("product");
+        id = await newProRef.add({
+          "name": nameCa,
+          "idCategory": db.doc("category/category-${z + 1}"),
+          "idMaterial": db.doc("material/material-${j + 1}"),
+          "idGender": db.doc("gender/gender-${i + 1}"),
+          "price": price * 1000,
+          "salePrice": salePrice * 1000,
+          "description":
+              "Duis dolor mollit occaecat aliquip voluptate commodo ipsum occaecat elit culpa. Mollit aute pariatur minim laborum dolore nisi proident. Magna adipisicing anim do ipsum aliquip eiusmod tempor enim duis. Minim et excepteur tempor adipisicing aute sint velit non.",
+        }).then((value) => value.id);
         for (var c = 0; c < 6; c++) {
-          String nameC = "$nameCa ${color[c]}";
           for (var s = 0; s < 4; s++) {
-            String nameS = "$nameC ${size[s]}";
-            int price = 200 + Random().nextInt(1000 - 200 + 1);
-            int priceSale =
-                price - (200 + Random().nextInt(400 - 200 + 1));
-            String id = "";
-            final newProRef = db.collection("product");
-            id = await newProRef.add({
-              "name": nameS,
-              "idCategory": db.doc("category/category-${z + 1}"),
-              "idMaterial": db.doc("material/material-${j + 1}"),
-              "idGender": db.doc("gender/gender-${i + 1}"),
-              "price": price * 1000,
-              "priceSale": priceSale * 1000,
-              "description":
-                  "Duis dolor mollit occaecat aliquip voluptate commodo ipsum occaecat elit culpa. Mollit aute pariatur minim laborum dolore nisi proident. Magna adipisicing anim do ipsum aliquip eiusmod tempor enim duis. Minim et excepteur tempor adipisicing aute sint velit non.",
-            }).then((value) => value.id);
             final newVariantRef = db.collection("variant");
             await newVariantRef.add({
-              "name": nameS,
               "idSize": db.doc("size/size-${s + 1}"),
               "idColor": db.doc("color/color-${c + 1}"),
               "idProduct": db.doc("product/$id"),
