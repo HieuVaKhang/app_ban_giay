@@ -1,12 +1,15 @@
+import 'package:app_ban_giay/libraries/config.dart';
 import 'package:app_ban_giay/libraries/function.dart';
 import 'package:app_ban_giay/module/cart/cart_index.dart';
+import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
+import 'package:app_ban_giay/module/cart/repository/cart_repository.dart';
 import 'package:app_ban_giay/module/product/model/product_model.dart';
 import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
 import 'package:app_ban_giay/module/news/model/news_model.dart';
 import 'package:app_ban_giay/module/news/screen/widget/news_item_widget.dart';
-import 'package:app_ban_giay/module/user/screen/register_screen.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:go_router/go_router.dart';
 
@@ -63,33 +66,44 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: InkWell(
-              onTap: () =>
-                  context.push(Func.convertName(const CartIndex().key)),
-              child: Stack(children: [
-                Center(
-                  child: Image.asset('assets/images/icon_cart.png'),
-                ),
-                Positioned(
-                    top: 0,
-                    right: 0,
-                    child: Container(
-                      width: 16,
-                      height: 16,
-                      decoration: const BoxDecoration(
-                          color: Color(0xffF15E2C),
-                          borderRadius: BorderRadius.all(Radius.circular(8))),
-                      child: const Center(
-                        child: Text(
-                          '4',
-                          style: TextStyle(color: Colors.white, fontSize: 10),
-                        ),
+              padding: const EdgeInsets.all(8.0),
+              child: Consumer(
+                builder: (context, ref, child) {
+                  ref.watch(cartProvider);                  
+                  return InkWell(
+                    onTap: () {
+                      ref.read(cartProvider.notifier).getCartModelList();
+                      context.push(Func.convertName(const CartIndex().key));
+                    },
+                    child: Stack(children: [
+                      Center(
+                        child: Image.asset('assets/images/icon_cart.png'),
                       ),
-                    )),
-              ]),
-            ),
-          )
+                      Positioned(
+                          top: 0,
+                          right: 0,
+                          child: Container(
+                            width: 16,
+                            height: 16,
+                            decoration: const BoxDecoration(
+                                color: Color(0xffF15E2C),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8))),
+                            child: Center(
+                              child: Text(
+                                ref
+                                    .read(cartProvider.notifier)
+                                    .getCartNumber()
+                                    .toString(),
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 10),
+                              ),
+                            ),
+                          )),
+                    ]),
+                  );
+                },
+              )),
         ],
       ),
       body: SizedBox(
