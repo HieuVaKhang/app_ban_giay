@@ -41,7 +41,7 @@ final getCartVariantList = FutureProvider<List<VariantModel>>((ref) async {
             description: result['description'],
             price: double.parse(result['price'].toString()),
             salePrice: double.parse(result['salePrice'].toString()),
-            photo: result['photo'],
+            photo: element.data()['photo'],
             colorName: colorRef.name,
             sizeName: sizeRef.name,
           );
