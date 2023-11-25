@@ -7,6 +7,8 @@ import 'package:app_ban_giay/module/product/model/product_model.dart';
 import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
 import 'package:app_ban_giay/module/news/model/news_model.dart';
 import 'package:app_ban_giay/module/news/screen/widget/news_item_widget.dart';
+import 'package:app_ban_giay/module/user/screen/register_screen.dart';
+import 'package:app_ban_giay/module/user/screen/user_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,11 +40,13 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         title: Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 50),
-              child: CircleAvatar(
-                backgroundColor: Colors.orange.shade800,
-                radius: 25,
+            InkWell(
+              onTap: () =>
+                  context.push(Func.convertName(const UserScreen().key)),
+              child: Image.asset(
+                'assets/images/avatar.png',
+                height: 50,
+                width: 50,
               ),
             ),
             Container(
@@ -301,6 +305,35 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
+        ),
+      ),
+      bottomNavigationBar: Container(
+        color: const Color(0xffFF9672),
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: BottomNavigationBar(
+          elevation: 0,
+          unselectedItemColor: Colors.white,
+          selectedItemColor: Colors.white,
+          backgroundColor: const Color(0xffFF9672),
+          type: BottomNavigationBarType.fixed,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_rounded),
+              label: 'Trang chủ',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.card_travel_rounded),
+              label: 'Giỏ hàng',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.newspaper_rounded),
+              label: 'Tin tức',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.assignment_ind_outlined),
+              label: 'Tài khoản',
+            ),
+          ],
         ),
       ),
     );
