@@ -303,6 +303,35 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+      bottomNavigationBar: Container(
+        color: const Color(0xffFF9672),
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: BottomNavigationBar(
+          elevation: 0,
+          unselectedItemColor: Colors.white,
+          selectedItemColor: Colors.white,
+          backgroundColor: const Color(0xffFF9672),
+          type: BottomNavigationBarType.fixed,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_rounded),
+              label: 'Trang chủ',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.card_travel_rounded),
+              label: 'Giỏ hàng',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.newspaper_rounded),
+              label: 'Tin tức',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.assignment_ind_outlined),
+              label: 'Tài khoản',
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
