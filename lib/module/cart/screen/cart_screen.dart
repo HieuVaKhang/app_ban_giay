@@ -52,14 +52,7 @@ class CartScreen extends StatelessWidget {
                                                   10) /
                                               2,
                                       child: ProductItemWidget(
-                                        model: ProductModel(
-                                            name: "Tên sản phẩm",
-                                            colorName: "Đỏ",
-                                            sizeName: "XXL",
-                                            salePrice: 200000,
-                                            price: 300000,
-                                            photo:
-                                                "https://ananas.vn/wp-content/uploads/Pro_AV00165_1-500x500.jpeg"),
+                                        model: e.model,
                                         showCartCount: true,
                                         showCartCountEdit: true,
                                         showDelete: true,
