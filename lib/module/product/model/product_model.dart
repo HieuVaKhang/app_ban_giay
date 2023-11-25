@@ -1,11 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:app_ban_giay/module/product/model/category_model.dart';
+import 'package:app_ban_giay/module/product/model/gender_model.dart';
+import 'package:app_ban_giay/module/product/model/material_model.dart';
+
 class ProductModel {
   final String? id;
-  final String? idCategory;
-  final String? idMaterial;
-  final String? idGender;
+  final CategoryModel? idCategory;
+  final MaterialModel? idMaterial;
+  final GenderModel? idGender;
   final String? name;
   final double? price;
   final double? salePrice;
@@ -31,11 +35,12 @@ class ProductModel {
     this.sizeName,
   });
 
+
   ProductModel copyWith({
     String? id,
-    String? idCategory,
-    String? idMaterial,
-    String? idGender,
+    CategoryModel? idCategory,
+    MaterialModel? idMaterial,
+    GenderModel? idGender,
     String? name,
     double? price,
     double? salePrice,
@@ -66,9 +71,9 @@ class ProductModel {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'idCategory': idCategory,
-      'idMaterial': idMaterial,
-      'idGender': idGender,
+      'idCategory': idCategory?.toMap(),
+      'idMaterial': idMaterial?.toMap(),
+      'idGender': idGender?.toMap(),
       'name': name,
       'price': price,
       'salePrice': salePrice,
@@ -84,9 +89,9 @@ class ProductModel {
   factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
       id: map['id'] != null ? map['id'] as String : null,
-      idCategory: map['idCategory'] != null ? map['idCategory'] as String : null,
-      idMaterial: map['idMaterial'] != null ? map['idMaterial'] as String : null,
-      idGender: map['idGender'] != null ? map['idGender'] as String : null,
+      idCategory: map['idCategory'] != null ? CategoryModel.fromMap(map['idCategory'] as Map<String,dynamic>) : null,
+      idMaterial: map['idMaterial'] != null ? MaterialModel.fromMap(map['idMaterial'] as Map<String,dynamic>) : null,
+      idGender: map['idGender'] != null ? GenderModel.fromMap(map['idGender'] as Map<String,dynamic>) : null,
       name: map['name'] != null ? map['name'] as String : null,
       price: map['price'] != null ? map['price'] as double : null,
       salePrice: map['salePrice'] != null ? map['salePrice'] as double : null,

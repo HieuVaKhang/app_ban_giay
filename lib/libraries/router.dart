@@ -1,5 +1,6 @@
 import 'package:app_ban_giay/libraries/function.dart';
 import 'package:app_ban_giay/module/cart/cart_index.dart';
+import 'package:app_ban_giay/module/generate_product/generate_product_index.dart';
 import 'package:app_ban_giay/module/home/home_index.dart';
 import 'package:app_ban_giay/module/payment/payment_index.dart';
 import 'package:app_ban_giay/module/payment_method/payment_method_index.dart';
@@ -16,9 +17,9 @@ final List<GoRoute> danhsachRoute = [
   Func.addGoRouter(const PaymentIndex()),
   Func.addGoRouter(const UserInfoIndex()),
   Func.addGoRouter(const PaymentMethodIndex()),
-Func.addGoRouter(const UserIndex()),
-Func.addGoRouter(const LoginScreen()),
-Func.addGoRouter(const RegisterScreen()),
+  Func.addGoRouter(const UserIndex()),
+  Func.addGoRouter(const LoginScreen()),
+  Func.addGoRouter(const RegisterScreen()),
+  Func.addGoRouter(const GenerateProductIndex()),
 ];
-
-const String initRouter = "/welcome";
+String initRouter = Func.convertName(const HomeIndex().key);
