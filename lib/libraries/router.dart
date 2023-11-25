@@ -8,6 +8,7 @@ import 'package:app_ban_giay/module/product_category/product_category_index.dart
 import 'package:app_ban_giay/module/product_detail/product_detail_index.dart';
 import 'package:app_ban_giay/module/user/screen/login_screen.dart';
 import 'package:app_ban_giay/module/user/screen/register_screen.dart';
+import 'package:app_ban_giay/module/user/screen/user_screen.dart';
 import 'package:app_ban_giay/module/user_info/user_info_index.dart';
 import 'package:go_router/go_router.dart';
 
@@ -25,5 +26,7 @@ final List<GoRoute> danhsachRoute = [
   Func.addGoRouter(const GenerateProductIndex()),
 Func.addGoRouter(const ProductDetailIndex()),
 Func.addGoRouter(const ProductCategoryIndex()),
+    Func.addGoRouter(const UserScreen()),
+  Func.addGoRouter(const RegisterScreen()),
 ];
 String initRouter = Func.convertName(const HomeIndex().key);

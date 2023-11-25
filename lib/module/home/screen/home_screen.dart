@@ -7,6 +7,8 @@ import 'package:app_ban_giay/module/product/model/product_model.dart';
 import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
 import 'package:app_ban_giay/module/news/model/news_model.dart';
 import 'package:app_ban_giay/module/news/screen/widget/news_item_widget.dart';
+import 'package:app_ban_giay/module/user/screen/register_screen.dart';
+import 'package:app_ban_giay/module/user/screen/user_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,11 +40,13 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         title: Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 50),
-              child: CircleAvatar(
-                backgroundColor: Colors.orange.shade800,
-                radius: 25,
+            InkWell(
+              onTap: () =>
+                  context.push(Func.convertName(const UserScreen().key)),
+              child: Image.asset(
+                'assets/images/avatar.png',
+                height: 50,
+                width: 50,
               ),
             ),
             Container(
