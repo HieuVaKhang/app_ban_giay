@@ -1,13 +1,10 @@
-import 'package:app_ban_giay/libraries/config.dart';
 import 'package:app_ban_giay/libraries/function.dart';
 import 'package:app_ban_giay/module/cart/cart_index.dart';
 import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
-import 'package:app_ban_giay/module/cart/repository/cart_repository.dart';
 import 'package:app_ban_giay/module/product/model/product_model.dart';
 import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
 import 'package:app_ban_giay/module/news/model/news_model.dart';
 import 'package:app_ban_giay/module/news/screen/widget/news_item_widget.dart';
-import 'package:app_ban_giay/module/user/screen/register_screen.dart';
 import 'package:app_ban_giay/module/user/screen/user_screen.dart';
 
 import 'package:flutter/material.dart';
