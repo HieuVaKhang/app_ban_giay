@@ -1,8 +1,6 @@
 import 'package:app_ban_giay/module/product/model/product_model.dart';
 import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class ProductCategoryScreen extends StatelessWidget {
   const ProductCategoryScreen({super.key});

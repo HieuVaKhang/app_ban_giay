@@ -1,13 +1,8 @@
-import 'dart:math';
 
 import 'package:app_ban_giay/module/cart/cart_index.dart';
-import 'package:app_ban_giay/module/user/screen/login_screen.dart';
-import 'package:app_ban_giay/module/user/screen/welcome_screen.dart';
 import 'package:app_ban_giay/module/user/user_index.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive_flutter/adapters.dart';
 
 import '../../../libraries/function.dart';
 
@@ -20,14 +15,14 @@ class UserScreen extends StatelessWidget {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.white,
-          title: Row(
+          title: const Row(
             children: [
               Image(
                 image: AssetImage('assets/images/logo.png'),
                 height: 35,
                 width: 20,
               ),
-              Padding(padding: const EdgeInsets.only(left: 21)),
+              Padding(padding: EdgeInsets.only(left: 21)),
               Text(
                 'Tài Khoản',
                 style: TextStyle(
@@ -51,11 +46,11 @@ class UserScreen extends StatelessWidget {
                         color: Colors.black,
                         width: 1.5,
                       ),
-                      borderRadius: BorderRadius.all(
+                      borderRadius: const BorderRadius.all(
                         Radius.circular(30),
                       ),
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.more_horiz,
                       color: Colors.black,
                       size: 17,
@@ -65,7 +60,7 @@ class UserScreen extends StatelessWidget {
           ],
         ),
         body: Padding(
-          padding: EdgeInsets.only(top: 20, left: 15, right: 15),
+          padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -75,7 +70,7 @@ class UserScreen extends StatelessWidget {
                 children: [
                   InkWell(
                     child: Container(
-                      margin: EdgeInsets.only(right: 20),
+                      margin: const EdgeInsets.only(right: 20),
                       child: Stack(
                         children: [
                           Center(
@@ -108,7 +103,7 @@ class UserScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Column(
+                  const Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -131,20 +126,20 @@ class UserScreen extends StatelessWidget {
                 ],
               ),
               Container(
-                  margin: EdgeInsets.only(top: 25, bottom: 25),
+                  margin: const EdgeInsets.only(top: 25, bottom: 25),
                   width: MediaQuery.of(context).size.width,
                   height: 1,
-                  color: Color(0xffF0F0F0)),
+                  color: const Color(0xffF0F0F0)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  InkWell(
-                      child: const Text(
+                  const InkWell(
+                      child: Text(
                     'Chỉnh sửa thông tin',
                     style: TextStyle(fontSize: 13, color: Colors.black),
                   )),
                   Container(
-                    child: Icon(
+                    child: const Icon(
                       Icons.arrow_forward_ios,
                       color: Colors.black,
                       size: 15,
@@ -152,19 +147,19 @@ class UserScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  InkWell(
-                      child: const Text(
+                  const InkWell(
+                      child: Text(
                     'Địa chỉ',
                     style: TextStyle(fontSize: 13, color: Colors.black),
                   )),
                   Container(
-                    child: Icon(
+                    child: const Icon(
                       Icons.arrow_forward_ios,
                       color: Colors.black,
                       size: 15,
@@ -172,7 +167,7 @@ class UserScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               Row(
@@ -185,7 +180,7 @@ class UserScreen extends StatelessWidget {
                         style: TextStyle(fontSize: 13, color: Colors.black),
                       )),
                   Container(
-                    child: Icon(
+                    child: const Icon(
                       Icons.arrow_forward_ios,
                       color: Colors.black,
                       size: 15,
