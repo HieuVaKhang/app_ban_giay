@@ -101,7 +101,19 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           InkWell(
-              onTap: _SignIn,
+              onTap: () async {
+                String email = _emailController.text;
+                String password = _passwordController.text;
+
+                User? user =
+                    await _auth.signInWithEmailAndPassword(email, password);
+                if (user?.uid.isNotEmpty ?? false) {
+                  print('Đăng nhập thành công!');
+                  context.go(Func.convertName(const HomeIndex().key));
+                } else {
+                  print('Some error occured!');
+                }
+              },
               child: Container(
                 margin: const EdgeInsets.only(top: 20, bottom: 20),
                 alignment: Alignment.center,
@@ -155,20 +167,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ]),
       ),
     );
-  }
-
-
-  void _SignIn() async {
-    String email = _emailController.text;
-    String password = _passwordController.text;
-
-    User? user = await _auth.signInWithEmailAndPassword(email, password);
-
-    if(user != null){
-      print('Đăng nhập thành công!');
-      context.push(Func.convertName(const HomeIndex().key));
-    } else{
-       print('Some error occured!');
-    }
   }
 }
