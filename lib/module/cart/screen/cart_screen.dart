@@ -29,13 +29,13 @@ class CartScreen extends StatelessWidget {
                   width: MediaQuery.of(context).size.width,
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 15),
                       child: Wrap(
-                        alignment: WrapAlignment.center,
+                        alignment: WrapAlignment.spaceBetween,
                         spacing: 10,
                         runSpacing: 10,
                         direction: Axis.horizontal,
-                        children: data.isNotEmpty ?? false
+                        children: data.isNotEmpty
                             ? data
                                 .map(
                                   (e) => SizedBox(
@@ -44,7 +44,7 @@ class CartScreen extends StatelessWidget {
                                             10) /
                                         2,
                                     child: ProductItemWidget(
-                                      model: e.model,
+                                      model: e,
                                       showCartCount: true,
                                       showCartCountEdit: true,
                                       showDelete: true,
@@ -94,7 +94,7 @@ class CartScreen extends StatelessWidget {
               final provider = ref.watch(getCartVariantList);
               return provider.when(
                 data: (data) {
-                   double totalPrice = 0;
+                  double totalPrice = 0;
                   for (var element in data) {
                     totalPrice += element.salePrice ?? element.price;
                   }
@@ -116,7 +116,8 @@ class CartScreen extends StatelessWidget {
                   );
                 },
                 loading: () {
-                  return const CircularProgressIndicator(color: Color(0xffF15E2C));
+                  return const CircularProgressIndicator(
+                      color: Color(0xffF15E2C));
                 },
               );
             }),

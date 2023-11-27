@@ -1,8 +1,11 @@
 import 'package:app_ban_giay/libraries/function.dart';
 import 'package:app_ban_giay/module/cart/model/user_info_model.dart';
+import 'package:app_ban_giay/module/cart/model/variant_model.dart';
 import 'package:app_ban_giay/module/payment/screen/widget/user_info_widget.dart';
 import 'package:app_ban_giay/module/payment_method/payment_method_index.dart';
+import 'package:app_ban_giay/module/product/model/color_model.dart';
 import 'package:app_ban_giay/module/product/model/product_model.dart';
+import 'package:app_ban_giay/module/product/model/size_model.dart';
 import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -63,12 +66,20 @@ class PaymentScreen extends StatelessWidget {
                     (index) => SizedBox(
                       width: (MediaQuery.of(context).size.width - 50 - 10) / 2,
                       child: ProductItemWidget(
-                        model: ProductModel(
-                            name: "Tên sản phẩm",
-                            salePrice: 200000,
-                            price: 300000,
-                            photo:
-                                "https://ananas.vn/wp-content/uploads/Pro_AV00165_1-500x500.jpeg"),
+                        model: VariantModel(
+                          id: "",
+                          model: ProductModel(
+                              name: "Tên sản phẩm",
+                              salePrice: 200000,
+                              price: 300000,
+                              photo:
+                                  "https://ananas.vn/wp-content/uploads/Pro_AV00165_1-500x500.jpeg"),
+                          color: ColorModel(),
+                          size: SizeModel(),
+                          price: 300000,
+                          salePrice: 200000,
+                          quantity: 0,
+                        ),
                         showCartCount: true,
                       ),
                     ),

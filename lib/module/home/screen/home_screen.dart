@@ -1,16 +1,18 @@
 import 'package:app_ban_giay/libraries/config.dart';
 import 'package:app_ban_giay/libraries/function.dart';
 import 'package:app_ban_giay/module/cart/cart_index.dart';
+import 'package:app_ban_giay/module/cart/model/variant_model.dart';
 import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
 import 'package:app_ban_giay/module/home/home_index.dart';
 import 'package:app_ban_giay/module/home/repository/home_repo.dart';
+import 'package:app_ban_giay/module/product/model/color_model.dart';
 import 'package:app_ban_giay/module/product/model/product_model.dart';
+import 'package:app_ban_giay/module/product/model/size_model.dart';
 import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
 import 'package:app_ban_giay/module/news/model/news_model.dart';
 import 'package:app_ban_giay/module/news/screen/widget/news_item_widget.dart';
 import 'package:app_ban_giay/module/product_detail/product_detail_index.dart';
 import 'package:app_ban_giay/module/user/screen/user_screen.dart';
-import 'package:app_ban_giay/module/user/user_index.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -78,6 +80,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 builder: (context, ref, child) {
                   return InkWell(
                     onTap: () {
+                      // Config.providerContainer
+                      //     .read(cartProvider.notifier)
+                      //     .factoryBox();
                       context.push(Func.convertName(const CartIndex().key));
                     },
                     child: Stack(children: [
@@ -200,18 +205,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: List.generate(
                     10,
                     (index) => InkWell(
-                      onTap: () => context
-                          .push(Func.convertName(const ProductDetailIndex().key)),
+                      onTap: () => context.push(
+                          Func.convertName(const ProductDetailIndex().key)),
                       child: SizedBox(
                         width:
                             (MediaQuery.of(context).size.width - 40 - 10) / 2,
                         child: ProductItemWidget(
-                          model: ProductModel(
-                              name: "Tên sản phẩm",
-                              salePrice: 200000,
-                              price: 300000,
-                              photo:
-                                  "https://ananas.vn/wp-content/uploads/Pro_AV00165_1-500x500.jpeg"),
+                          model: VariantModel(
+                            id: "",
+                            model: ProductModel(
+                                name: "Tên sản phẩm",
+                                salePrice: 200000,
+                                price: 300000,
+                                photo:
+                                    "https://ananas.vn/wp-content/uploads/Pro_AV00165_1-500x500.jpeg"),
+                            color: ColorModel(),
+                            size: SizeModel(),
+                            price: 300000,
+                            salePrice: 200000,
+                            quantity: 0,
+                          ),
                         ),
                       ),
                     ),

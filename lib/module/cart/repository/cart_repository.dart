@@ -13,7 +13,7 @@ final getCartVariantList = FutureProvider<List<VariantModel>>((ref) async {
   if (box.keys.isEmpty) {
     return [];
   }
-  print(box.keys.toList().toString());
+  print(box.keys);
   final result = await db
       .collection("variant")
       .where(FieldPath.documentId, whereIn: box.keys.toList())
