@@ -1,11 +1,16 @@
+import 'package:app_ban_giay/libraries/config.dart';
 import 'package:app_ban_giay/libraries/function.dart';
 import 'package:app_ban_giay/module/cart/cart_index.dart';
 import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
+import 'package:app_ban_giay/module/home/home_index.dart';
+import 'package:app_ban_giay/module/home/repository/home_repo.dart';
 import 'package:app_ban_giay/module/product/model/product_model.dart';
 import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
 import 'package:app_ban_giay/module/news/model/news_model.dart';
 import 'package:app_ban_giay/module/news/screen/widget/news_item_widget.dart';
+import 'package:app_ban_giay/module/product_detail/product_detail_index.dart';
 import 'package:app_ban_giay/module/user/screen/user_screen.dart';
+import 'package:app_ban_giay/module/user/user_index.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,8 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Row(
           children: [
             InkWell(
-              onTap: () =>
-                  context.push(Func.convertName(const UserScreen().key)),
+              onTap: () {
+                context.push(Func.convertName(const UserScreen().key));
+              },
               child: Image.asset(
                 'assets/images/avatar.png',
                 height: 50,
@@ -70,10 +76,8 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.all(8.0),
               child: Consumer(
                 builder: (context, ref, child) {
-                  ref.watch(cartProvider);                  
                   return InkWell(
                     onTap: () {
-                      ref.read(cartProvider.notifier).getCartModelList();
                       context.push(Func.convertName(const CartIndex().key));
                     },
                     child: Stack(children: [
@@ -148,78 +152,46 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontWeight: FontWeight.w800),
                   ),
                 ),
-                Padding(
-                    padding:
-                        const EdgeInsets.only(bottom: 17, left: 20, right: 20),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Wrap(spacing: 13, children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          decoration: const BoxDecoration(
-                            color: Color(0xffF15E2C),
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                          child: const Text(
-                            'Giày Nam',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          decoration: const BoxDecoration(
-                            color: Color(0xffF15E2C),
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                          child: const Text(
-                            'Giày Nữ',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          decoration: const BoxDecoration(
-                            color: Color(0xffF15E2C),
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                          child: const Text(
-                            'Phụ kiện khác',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          decoration: const BoxDecoration(
-                            color: Color(0xffF15E2C),
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                          child: const Text(
-                            'Phụ kiện khác 2',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ]),
-                    )),
+                Consumer(builder: (context, ref, child) {
+                  final categories = ref.watch(getCategoryProductProvider);
+                  return categories.when(
+                    data: (data) {
+                      return Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: 17, left: 20, right: 20),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Wrap(
+                                spacing: 13,
+                                children: data
+                                    .map(
+                                      (e) => Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 10),
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xffF15E2C),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                        ),
+                                        child: Text(
+                                          e.name ?? "",
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            fontSize: 13,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                    .toList()),
+                          ));
+                    },
+                    error: (error, stackTrace) => const Text("Lỗi đã xảy ra"),
+                    loading: () => const CircularProgressIndicator(
+                      color: Color(0xffF15E2C),
+                    ),
+                  );
+                }),
                 Wrap(
                   alignment: WrapAlignment.center,
                   spacing: 15,
@@ -227,15 +199,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   direction: Axis.horizontal,
                   children: List.generate(
                     10,
-                    (index) => SizedBox(
-                      width: (MediaQuery.of(context).size.width - 40 - 10) / 2,
-                      child: ProductItemWidget(
-                        model: ProductModel(
-                            name: "Tên sản phẩm",
-                            salePrice: 200000,
-                            price: 300000,
-                            photo:
-                                "https://ananas.vn/wp-content/uploads/Pro_AV00165_1-500x500.jpeg"),
+                    (index) => InkWell(
+                      onTap: () => context
+                          .push(Func.convertName(const ProductDetailIndex().key)),
+                      child: SizedBox(
+                        width:
+                            (MediaQuery.of(context).size.width - 40 - 10) / 2,
+                        child: ProductItemWidget(
+                          model: ProductModel(
+                              name: "Tên sản phẩm",
+                              salePrice: 200000,
+                              price: 300000,
+                              photo:
+                                  "https://ananas.vn/wp-content/uploads/Pro_AV00165_1-500x500.jpeg"),
+                        ),
                       ),
                     ),
                   ),
@@ -308,6 +285,24 @@ class _HomeScreenState extends State<HomeScreen> {
         color: const Color(0xffFF9672),
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: BottomNavigationBar(
+          onTap: (value) {
+            switch (value) {
+              case 0:
+                context.go(Func.convertName(const HomeIndex().key));
+                break;
+              case 1:
+                context.push(Func.convertName(const CartIndex().key));
+                break;
+              case 2:
+                context.go(Func.convertName(const HomeIndex().key));
+                break;
+              case 3:
+                context.go(Func.convertName(const UserScreen().key));
+                break;
+              default:
+                context.push(Func.convertName(const HomeIndex().key));
+            }
+          },
           elevation: 0,
           unselectedItemColor: Colors.white,
           selectedItemColor: Colors.white,

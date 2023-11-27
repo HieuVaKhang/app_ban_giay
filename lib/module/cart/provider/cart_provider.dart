@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:math';
 
 import 'package:app_ban_giay/libraries/config.dart';
+import 'package:app_ban_giay/module/cart/model/variant_model.dart';
 import 'package:app_ban_giay/module/cart/provider/cart_state.dart';
 import 'package:app_ban_giay/module/cart/repository/cart_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,30 +14,37 @@ class CartNotifier extends Notifier<CartState> {
     return CartState(total: 0, isLoading: false, error: false);
   }
 
-  void getCartModelList() {
-    inspect("Bấm vào laod ra");
-    state = state.copyWith(isLoading: true);
-    final modal = ref.watch(getCartVariantList);
-    modal.when(
-      data: (data) {
-        state = state.copyWith(listProduct: data, isLoading: false, total: caculateTotal());
-      },
-      error: (error, stackTrace) {
-        inspect("Lỗi mẹ r");
-        state = state.copyWith(error: true, isLoading: false);
-      },
-      loading: () {
-        inspect({"đang tải"});
-      },
-    );
+  // void getCartModelList() {
+  //   inspect("Bấm vào laod ra");
+  //   state = state.copyWith(isLoading: true);
+  //   final modal = ref.watch(getCartVariantList);
+  //   modal.when(
+  //     data: (data) {
+  //       state = state.copyWith(listProduct: data, isLoading: false, total: caculateTotal());
+  //     },
+  //     error: (error, stackTrace) {
+  //       inspect("Lỗi mẹ r");
+  //       state = state.copyWith(error: true, isLoading: false);
+  //     },
+  //     loading: () {
+  //       inspect({"đang tải"});
+  //     },
+  //   );
+  // }
+
+  void updateListProduct(List<VariantModel> listModal) {
+    double totalPrice = 0;
+    for (var element in listModal) {
+      totalPrice += element.salePrice ?? element.price;
+    }
   }
 
-  double caculateTotal() {
-    if (state.listProduct?.isEmpty ?? true) {
+  double caculateTotal(List<VariantModel> listModal) {
+    if (listModal.isNotEmpty) {
       return 0;
     }
     double totalPrice = 0;
-    for (var element in state.listProduct ?? []) {
+    for (var element in listModal) {
       totalPrice += element.salePrice ?? element.price;
     }
     return totalPrice;
