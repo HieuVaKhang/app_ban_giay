@@ -1,5 +1,6 @@
 import 'package:app_ban_giay/libraries/function.dart';
 import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
+import 'package:app_ban_giay/module/cart/repository/cart_repository.dart';
 import 'package:app_ban_giay/module/payment/payment_index.dart';
 import 'package:app_ban_giay/module/product/model/product_model.dart';
 import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
@@ -21,56 +22,55 @@ class CartScreen extends StatelessWidget {
       ),
       body: Consumer(
         builder: (context, ref, child) {
-          final provider = ref.watch(cartProvider);
-          if (provider.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: Color(0xffF15E2C)),
-            );
-          } else if (provider.error) {
-            return const Center(
-              child: Text("Đã có lỗi xảy ra, vui lòng thử lại sau"),
-            );
-          } else {
-            print(provider.listProduct.toString());
-            return SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 24),
-                    child: Wrap(
-                      alignment: WrapAlignment.center,
-                      spacing: 10,
-                      runSpacing: 10,
-                      direction: Axis.horizontal,
-                      children: provider.listProduct?.isNotEmpty ?? false
-                          ? provider.listProduct
-                                  ?.map(
-                                    (e) => SizedBox(
-                                      width:
-                                          (MediaQuery.of(context).size.width -
-                                                  50 -
-                                                  10) /
-                                              2,
-                                      child: ProductItemWidget(
-                                        model: e.model,
-                                        showCartCount: true,
-                                        showCartCountEdit: true,
-                                        showDelete: true,
-                                      ),
+          final provider = ref.watch(getCartVariantList);
+          return provider.when(
+            data: (data) {
+              return SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      child: Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: 10,
+                        runSpacing: 10,
+                        direction: Axis.horizontal,
+                        children: data.isNotEmpty ?? false
+                            ? data
+                                .map(
+                                  (e) => SizedBox(
+                                    width: (MediaQuery.of(context).size.width -
+                                            50 -
+                                            10) /
+                                        2,
+                                    child: ProductItemWidget(
+                                      model: e.model,
+                                      showCartCount: true,
+                                      showCartCountEdit: true,
+                                      showDelete: true,
                                     ),
-                                  )
-                                  .toList() ??
-                              [
+                                  ),
+                                )
+                                .toList()
+                            : [
                                 const Text(
                                     "Chưa có sản phẩm nào trong giỏ hàng"),
-                              ]
-                          : [
-                              const Text("Chưa có sản phẩm nào trong giỏ hàng"),
-                            ],
+                              ],
+                      ),
                     ),
-                  ),
-                ));
-          }
+                  ));
+            },
+            error: (error, stackTrace) {
+              return const Center(
+                child: Text("Đã có lỗi xảy ra, vui lòng thử lại sau"),
+              );
+            },
+            loading: () {
+              return const Center(
+                child: CircularProgressIndicator(color: Color(0xffF15E2C)),
+              );
+            },
+          );
         },
       ),
       bottomNavigationBar: Container(
@@ -91,11 +91,33 @@ class CartScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Consumer(builder: (context, ref, child) {
-              final provider = ref.watch(cartProvider);
-              return Text(
-                Func.formatPrice(provider.total),
-                style: const TextStyle(
-                    color: Color(0xffF15E2C), fontSize: 16, height: 25 / 16),
+              final provider = ref.watch(getCartVariantList);
+              return provider.when(
+                data: (data) {
+                   double totalPrice = 0;
+                  for (var element in data) {
+                    totalPrice += element.salePrice ?? element.price;
+                  }
+                  return Text(
+                    Func.formatPrice(totalPrice),
+                    style: const TextStyle(
+                        color: Color(0xffF15E2C),
+                        fontSize: 16,
+                        height: 25 / 16),
+                  );
+                },
+                error: (error, stackTrace) {
+                  return Text(
+                    Func.formatPrice(0),
+                    style: const TextStyle(
+                        color: Color(0xffF15E2C),
+                        fontSize: 16,
+                        height: 25 / 16),
+                  );
+                },
+                loading: () {
+                  return const CircularProgressIndicator(color: Color(0xffF15E2C));
+                },
               );
             }),
             InkWell(
