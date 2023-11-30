@@ -15,8 +15,9 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final FirebaseAuthService _auth = FirebaseAuthService();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _obscureText = true;
 
   @override
   void dispose() {
@@ -68,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return "Bạn chưa nhập Email ";
+                  return "Bạn chưa nhập email!";
                 }
                 return null;
               },
@@ -79,8 +80,8 @@ class _LoginScreenState extends State<LoginScreen> {
             width: (MediaQuery.of(context).size.width) - 50,
             child: TextFormField(
               controller: _passwordController,
-              keyboardType: TextInputType.visiblePassword,
-              obscureText: true,
+              // keyboardType: TextInputType.visiblePassword,
+              obscureText: _obscureText,
               decoration: const InputDecoration(
                 labelText: "Mật khẩu",
                 prefixIcon: Icon(
@@ -98,6 +99,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 filled: true, // Cho phép đổ màu nền
                 fillColor: Color(0xffF4F4F4), // Màu sắc của nền
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Bạn chưa nhập mật khẩu!";
+                }
+                return null;
+              },
             ),
           ),
           InkWell(
@@ -112,6 +119,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   context.go(Func.convertName(const HomeIndex().key));
                 } else {
                   print('Some error occured!');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text(
+                      'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12,
+                      ),
+                    )),
+                  );  
                 }
               },
               child: Container(
@@ -168,4 +185,11 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
+  void _toggleObscureText() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 }
+

@@ -1,4 +1,3 @@
-
 import 'package:app_ban_giay/module/cart/cart_index.dart';
 import 'package:app_ban_giay/module/user/user_index.dart';
 import 'package:flutter/material.dart';
@@ -174,7 +173,71 @@ class UserScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   InkWell(
-                      onTap: () =>  context.push(Func.convertName(const UserIndex().key)),
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  InkWell(
+                                    child: Container(
+                                      width:
+                                          (MediaQuery.of(context).size.width) /
+                                              2,
+                                      padding: const EdgeInsets.only(
+                                          top: 15, bottom: 15),
+                                      child: Text(
+                                        'Đăng xuất',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                    ),
+                                    onTap: () async {
+                                      // Thực hiện đăng xuất
+                                      context.push(Func.convertName(
+                                          const UserIndex().key));
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Đăng xuất thành công!',
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  InkWell(
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFFF15E2C),
+                                      ),
+                                      width:
+                                          (MediaQuery.of(context).size.width) /
+                                              2,
+                                      padding:
+                                          EdgeInsets.only(top: 15, bottom: 15),
+                                      child: Text(
+                                        'Huỷ',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 15),
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                  )
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
                       child: const Text(
                         'Đăng xuất',
                         style: TextStyle(fontSize: 13, color: Colors.black),
