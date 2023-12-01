@@ -20,7 +20,6 @@ class NewsItemWidget extends StatelessWidget {
         ],
       ),
       child: Column(
-  
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.network(
@@ -31,10 +30,15 @@ class NewsItemWidget extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 0),
-            child: Text(
-              model.name ?? "",
-              style: const TextStyle(color: Colors.black, fontSize: 13),
-              textAlign: TextAlign.left,
+            child: SizedBox(
+              height: 32,
+              child: Text(
+                model.name ?? "",
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                style: const TextStyle(color: Colors.black, fontSize: 13),
+                textAlign: TextAlign.left,
+              ),
             ),
           ),
           Container(

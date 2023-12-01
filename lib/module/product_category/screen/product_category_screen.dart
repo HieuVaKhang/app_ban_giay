@@ -1,9 +1,11 @@
 import 'package:app_ban_giay/module/cart/model/variant_model.dart';
 import 'package:app_ban_giay/module/product/model/color_model.dart';
+import 'package:app_ban_giay/module/home/repository/home_repo.dart';
 import 'package:app_ban_giay/module/product/model/product_model.dart';
 import 'package:app_ban_giay/module/product/model/size_model.dart';
 import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProductCategoryScreen extends StatelessWidget {
   const ProductCategoryScreen({super.key});
@@ -11,7 +13,7 @@ class ProductCategoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
       ),
@@ -22,34 +24,33 @@ class ProductCategoryScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: Column(
               children: [
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 15,
-                  runSpacing: 15,
-                  direction: Axis.horizontal,
-                  children: List.generate(
-                    10,
-                    (index) => SizedBox(
-                      width: (MediaQuery.of(context).size.width - 40 - 10) / 2,
-                      child: ProductItemWidget(
-                        model: VariantModel(
-                          id: "",
-                          model: ProductModel(
-                              name: "Tên sản phẩm",
-                              salePrice: 200000,
-                              price: 300000,
-                              photo:
-                                  "https://ananas.vn/wp-content/uploads/Pro_AV00165_1-500x500.jpeg"),
-                          color: ColorModel(),
-                          size: SizeModel(),
-                          price: 300000,
-                          salePrice: 200000,
-                          quantity: 0,
-                        ),
-                      ),
+                Consumer(builder: (context, ref, child) {
+                  final homelist = ref.watch(homeListProductProvider);
+                  return homelist.when(
+                    data: (data) {
+                      return Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: 15,
+                          runSpacing: 15,
+                          direction: Axis.horizontal,
+                          children: data
+                              .map(
+                                (e) => SizedBox(
+                                  width: (MediaQuery.of(context).size.width -
+                                          40 -
+                                          10) /
+                                      2,
+                                  child: ProductItemWidget(model: e),
+                                ),
+                              )
+                              .toList());
+                    },
+                    error: ((error, stackTrace) => const Text("Dữ liệu lỗi")),
+                    loading: () => const CircularProgressIndicator(
+                      color: Color(0xffF15E2C),
                     ),
-                  ),
-                ),
+                  );
+                }),
               ],
             ),
           ),

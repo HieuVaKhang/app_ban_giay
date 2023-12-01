@@ -13,6 +13,7 @@ class VariantModel {
   final double price;
   final double salePrice;
   final int quantity;
+
   VariantModel({
     required this.id,
     required this.model,

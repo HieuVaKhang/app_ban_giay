@@ -1,7 +1,12 @@
+import 'dart:developer';
+
 import 'package:app_ban_giay/libraries/function.dart';
+import 'package:app_ban_giay/module/user/model/user_model.dart';
 import 'package:app_ban_giay/module/user/screen/login_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../libraries/firebase_auth_services.dart';
 
@@ -15,8 +20,8 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final FirebaseAuthService _auth = FirebaseAuthService();
 
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   void dispose() {
@@ -89,19 +94,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           InkWell(
               onTap: () async {
-                String email = _emailController.text;
-                String password = _passwordController.text;
-
-                User? user =
-                    await _auth.signUpWithEmailAndPassword(email, password);
+                User? user = await _auth.signUpWithEmailAndPassword(
+                    _emailController.text, _passwordController.text);
                 String id = user?.uid ?? "";
-
                 if (id.isNotEmpty) {
-                  await _auth.addUser(id, "Chưa Đặt Tên", email);
+                  // final db = FirebaseFirestore.instance;
+                  // final userAccount = db.collection("user");
+                  // await userAccount.add({
+                  //   "id": db.doc(id),
+                  //   "userName": db.doc('Chưa Đặt Tên'),
+                  //   "email": db.doc(_emailController.text),
+                  //   "password": db.doc(_passwordController.text),
+                  // });
+
+                  // print(userAccount);
+
+                  await _auth.addUser(id, "Chưa Đặt Tên", _passwordController.text);
+
                   print('Đăng ký thành công!');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text(
+                      'Đăng ký thành công!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12,
+                      ),
+                    )),
+                  );
                   context.push(Func.convertName(const LoginScreen().key));
                 } else {
                   print('Some error occured!');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text(
+                      'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12,
+                      ),
+                    )),
+                  );
                 }
               },
               child: Container(
@@ -159,3 +192,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
+
+final UserProvider = StateProvider<UserModel>((ref) {
+  return UserModel(id: '', userName: '', password: '');
+});
