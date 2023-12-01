@@ -31,4 +31,4 @@ final List<GoRoute> danhsachRoute = [
 
   Func.addGoRouter(const UserScreen()),
 ];
-String initRouter = Func.convertName(const HomeIndex().key);
+String initRouter = Func.convertName(const UserScreen().key);
