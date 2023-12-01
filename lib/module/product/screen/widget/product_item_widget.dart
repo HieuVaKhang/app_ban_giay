@@ -42,7 +42,6 @@ class ProductItemWidget extends StatelessWidget {
                 fit: BoxFit.cover,
                 height: 160,
                 width: double.infinity,
-
               ),
               Text(
                 model.name ?? "",
@@ -175,7 +174,8 @@ class ProductItemWidget extends StatelessWidget {
                             textAlign: TextAlign.center,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(color: Colors.white, fontSize: 10),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 10),
                           ),
                         ),
                       if (model.colorName != null)
@@ -191,7 +191,8 @@ class ProductItemWidget extends StatelessWidget {
                             textAlign: TextAlign.center,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(color: Colors.white, fontSize: 10),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 10),
                           ),
                         ),
                     ],
