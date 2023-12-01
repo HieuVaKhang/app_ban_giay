@@ -60,50 +60,44 @@ class UserInfoWidget extends StatelessWidget {
               ),
             ),
           ),
-          ConstrainedBox(
-            constraints: BoxConstraints(
-                maxWidth: (MediaQuery.of(context).size.width - 40) / 2),
-            child: Flexible(
-              child: InkWell(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          InkWell(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Wrap(
+                  runSpacing: 5,
+                  alignment: WrapAlignment.start,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    Wrap(
-                      runSpacing: 5,
-                      alignment: WrapAlignment.start,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        Text(
-                          model.name ?? "",
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                              color: Colors.black, fontSize: 15),
-                        ),
-                        if (isDefault)
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                                color: Color(0xffE7E7E7)),
-                            child: const Text(
-                              "Mặc định",
-                              style:
-                                  TextStyle(fontSize: 8, color: Colors.black),
-                            ),
-                          )
-                      ],
-                    ),
                     Text(
-                      model.address ?? "",
+                      model.fullname ?? "",
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                          color: Color(0xff686868), fontSize: 10),
+                          color: Colors.black, fontSize: 15),
                     ),
+                    if (isDefault)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        decoration: const BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10)),
+                            color: Color(0xffE7E7E7)),
+                        child: const Text(
+                          "Mặc định",
+                          style:
+                              TextStyle(fontSize: 8, color: Colors.black),
+                        ),
+                      )
                   ],
                 ),
-              ),
+                Text(
+                  model.address ?? "",
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                      color: Color(0xff686868), fontSize: 10),
+                ),
+              ],
             ),
           ),
           if (canEdit)

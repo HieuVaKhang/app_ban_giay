@@ -6,8 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final genProductProvider = FutureProvider<void>((ref) async {
   final db = FirebaseFirestore.instance;
 
-  const color = ["Nâu", "Vàng", "Xanh lá", "Trắng", "Đen", "Xanh dương"];
-  const size = ["S", "M", "L", "XL"];
   const gender = ["Nam", "Nữ", "Trẻ em"];
   const material = ["Vải", "Da"];
   const category = ["Hot", "Best seller"];

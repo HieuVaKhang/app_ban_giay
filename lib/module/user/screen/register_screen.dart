@@ -1,9 +1,12 @@
-import 'package:app_ban_giay/libraries/function.dart';
-import 'package:app_ban_giay/module/user/screen/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../libraries/firebase_auth_services.dart';
+
+import 'package:app_ban_giay/libraries/firebase_auth_services.dart';
+import 'package:app_ban_giay/libraries/function.dart';
+import 'package:app_ban_giay/module/user/model/user_model.dart';
+import 'package:app_ban_giay/module/user/screen/login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: const Key("/register"));
@@ -15,8 +18,8 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final FirebaseAuthService _auth = FirebaseAuthService();
 
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   void dispose() {
@@ -31,13 +34,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(),
       body: Form(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Image(
+          const Image(
             image: AssetImage('assets/images/logo.png'),
           ),
           const SizedBox(
             height: 20,
           ),
-          Text(
+          const Text(
             "Đăng Ký Tài Khoản",
             style: TextStyle(
               fontSize: 30,
@@ -49,12 +52,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: TextFormField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: "Email",
-                prefixIcon: const Icon(Icons.mail),
+                prefixIcon: Icon(Icons.mail),
                 enabledBorder: OutlineInputBorder(
                   borderSide:
-                      BorderSide(color: const Color.fromARGB(0, 33, 149, 243)),
+                      BorderSide(color: Color.fromARGB(0, 33, 149, 243)),
                   borderRadius: BorderRadius.horizontal(
                     left: Radius.circular(30),
                     right: Radius.circular(30),
@@ -71,12 +74,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: _passwordController,
               keyboardType: TextInputType.visiblePassword,
               obscureText: true,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: "Mật khẩu",
-                prefixIcon: const Icon(Icons.lock),
+                prefixIcon: Icon(Icons.lock),
                 enabledBorder: OutlineInputBorder(
                   borderSide:
-                      BorderSide(color: const Color.fromARGB(0, 33, 149, 243)),
+                      BorderSide(color: Color.fromARGB(0, 33, 149, 243)),
                   borderRadius: BorderRadius.horizontal(
                     left: Radius.circular(30),
                     right: Radius.circular(30),
@@ -89,19 +92,50 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           InkWell(
               onTap: () async {
-                String email = _emailController.text;
-                String password = _passwordController.text;
-
-                User? user =
-                    await _auth.signUpWithEmailAndPassword(email, password);
+                User? user = await _auth.signUpWithEmailAndPassword(
+                    _emailController.text, _passwordController.text);
                 String id = user?.uid ?? "";
-
                 if (id.isNotEmpty) {
-                  await _auth.addUser(id, "Chưa Đặt Tên", email);
-                  print('Đăng ký thành công!');
-                  context.push(Func.convertName(const LoginScreen().key));
+                  // final db = FirebaseFirestore.instance;
+                  // final userAccount = db.collection("user");
+                  // await userAccount.add({
+                  //   "id": db.doc(id),
+                  //   "userName": db.doc('Chưa Đặt Tên'),
+                  //   "email": db.doc(_emailController.text),
+                  //   "password": db.doc(_passwordController.text),
+                  // });
+
+                  // print(userAccount);
+
+                  await _auth
+                      .addUser(id, "Chưa Đặt Tên", "")
+                      .then((value) {
+                    print('Đăng ký thành công!');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text(
+                        'Đăng ký thành công!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12,
+                        ),
+                      )),
+                    );
+                    
+                    context.go(Func.convertName(const LoginScreen().key));
+                  });
                 } else {
                   print('Some error occured!');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text(
+                      'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12,
+                      ),
+                    )),
+                  );
                 }
               },
               child: Container(
@@ -116,7 +150,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     right: Radius.circular(30),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   "Đăng ký",
                   style: TextStyle(
                     fontSize: 15,
@@ -141,7 +175,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     context.push(Func.convertName(const LoginScreen().key)),
                 child: Container(
                   padding: const EdgeInsets.only(left: 10),
-                  child: Text(
+                  child: const Text(
                     "Đăng nhập",
                     style: TextStyle(
                       fontSize: 13,
@@ -159,3 +193,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
+
+final UserProvider = StateProvider<UserModel>((ref) {
+  return UserModel(id: '', userName: '', password: '');
+});

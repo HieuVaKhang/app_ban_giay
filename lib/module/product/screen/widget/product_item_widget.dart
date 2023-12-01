@@ -1,6 +1,6 @@
 import 'package:app_ban_giay/libraries/function.dart';
+import 'package:app_ban_giay/module/cart/model/variant_model.dart';
 import 'package:app_ban_giay/module/cart/screen/widget/cart_bottom_sheet_modal_widget.dart';
-import 'package:app_ban_giay/module/product/model/product_model.dart';
 import 'package:flutter/material.dart';
 
 class ProductItemWidget extends StatelessWidget {
@@ -11,7 +11,7 @@ class ProductItemWidget extends StatelessWidget {
       this.showCartCount = false,
       this.showCartCountEdit = false})
       : super(key: key);
-  final ProductModel model;
+  final VariantModel model;
   final bool showDelete;
   final bool showCartCount;
   final bool showCartCountEdit;
@@ -38,14 +38,15 @@ class ProductItemWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.network(
-                model.photo ?? "",
+                model.model.photo ?? "",
                 fit: BoxFit.cover,
                 height: 160,
                 width: double.infinity,
-
               ),
               Text(
-                model.name ?? "",
+                model.model.name ?? "",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                     color: Colors.black, fontSize: 13, height: 25 / 13),
                 textAlign: TextAlign.center,
@@ -150,7 +151,7 @@ class ProductItemWidget extends StatelessWidget {
                 ),
               ),
             ),
-          if (model.colorName != null || model.sizeName != null)
+          if (model.color.name != null || model.size.name != null)
             Positioned(
                 top: 5,
                 left: 5,
@@ -161,7 +162,7 @@ class ProductItemWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (model.colorName != null)
+                      if (model.color.name != null)
                         Container(
                           margin: const EdgeInsets.only(bottom: 5),
                           decoration: const BoxDecoration(
@@ -171,14 +172,15 @@ class ProductItemWidget extends StatelessWidget {
                           width: constraints.maxWidth / 2,
                           padding: const EdgeInsets.all(10),
                           child: Text(
-                            model.colorName ?? "",
+                            model.color.name ?? "",
                             textAlign: TextAlign.center,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(color: Colors.white, fontSize: 10),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 10),
                           ),
                         ),
-                      if (model.colorName != null)
+                      if (model.size.name != null)
                         Container(
                           decoration: const BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -187,11 +189,12 @@ class ProductItemWidget extends StatelessWidget {
                           width: constraints.maxWidth / 2,
                           padding: const EdgeInsets.all(10),
                           child: Text(
-                            model.sizeName ?? "",
+                            model.size.name ?? "",
                             textAlign: TextAlign.center,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(color: Colors.white, fontSize: 10),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 10),
                           ),
                         ),
                     ],

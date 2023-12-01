@@ -1,8 +1,10 @@
-import 'package:app_ban_giay/module/home/repository/home_repo.dart';
-import 'package:app_ban_giay/module/product/model/product_model.dart';
-import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:app_ban_giay/module/home/repository/home_repo.dart';
+import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
 
 class ProductCategoryScreen extends StatelessWidget {
   const ProductCategoryScreen({super.key});

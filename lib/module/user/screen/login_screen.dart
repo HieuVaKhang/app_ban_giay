@@ -1,10 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import 'package:app_ban_giay/libraries/config.dart';
 import 'package:app_ban_giay/libraries/firebase_auth_services.dart';
 import 'package:app_ban_giay/libraries/function.dart';
 import 'package:app_ban_giay/module/home/home_index.dart';
+import 'package:app_ban_giay/module/user/provider/user_provider.dart';
 import 'package:app_ban_giay/module/user/screen/register_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: const Key("/login"));
@@ -15,8 +17,9 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final FirebaseAuthService _auth = FirebaseAuthService();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _obscureText = true;
 
   @override
   void dispose() {
@@ -68,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return "Bạn chưa nhập Email ";
+                  return "Bạn chưa nhập email!";
                 }
                 return null;
               },
@@ -79,8 +82,8 @@ class _LoginScreenState extends State<LoginScreen> {
             width: (MediaQuery.of(context).size.width) - 50,
             child: TextFormField(
               controller: _passwordController,
-              keyboardType: TextInputType.visiblePassword,
-              obscureText: true,
+              // keyboardType: TextInputType.visiblePassword,
+              obscureText: _obscureText,
               decoration: const InputDecoration(
                 labelText: "Mật khẩu",
                 prefixIcon: Icon(
@@ -98,6 +101,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 filled: true, // Cho phép đổ màu nền
                 fillColor: Color(0xffF4F4F4), // Màu sắc của nền
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Bạn chưa nhập mật khẩu!";
+                }
+                return null;
+              },
             ),
           ),
           InkWell(
@@ -105,14 +114,45 @@ class _LoginScreenState extends State<LoginScreen> {
                 String email = _emailController.text;
                 String password = _passwordController.text;
 
-                User? user =
-                    await _auth.signInWithEmailAndPassword(email, password);
-                if (user?.uid.isNotEmpty ?? false) {
-                  print('Đăng nhập thành công!');
-                  context.go(Func.convertName(const HomeIndex().key));
-                } else {
-                  print('Some error occured!');
-                }
+                await _auth
+                    .signInWithEmailAndPassword(email, password, context)
+                    .then((value) async {
+                  print(value);
+                  if (value?.uid.isNotEmpty ?? false) {
+                    await getUser(value?.uid ?? "").then((value) {
+                      if (Config.providerContainer
+                              .read(userProvider)
+                              .id
+                              ?.isNotEmpty ??
+                          false) {
+                        context.go(Func.convertName(const HomeIndex().key));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text(
+                            'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                            ),
+                          )),
+                        );
+                      }
+                    });
+                  } else {
+                    print('Some error occured!');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text(
+                        'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12,
+                        ),
+                      )),
+                    );
+                  }
+                });
               },
               child: Container(
                 margin: const EdgeInsets.only(top: 20, bottom: 20),
@@ -167,5 +207,11 @@ class _LoginScreenState extends State<LoginScreen> {
         ]),
       ),
     );
+  }
+
+  void _toggleObscureText() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
   }
 }

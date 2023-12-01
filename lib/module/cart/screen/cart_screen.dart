@@ -1,12 +1,11 @@
-import 'package:app_ban_giay/libraries/function.dart';
-import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
-import 'package:app_ban_giay/module/cart/repository/cart_repository.dart';
-import 'package:app_ban_giay/module/payment/payment_index.dart';
-import 'package:app_ban_giay/module/product/model/product_model.dart';
-import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import 'package:app_ban_giay/libraries/function.dart';
+import 'package:app_ban_giay/module/cart/repository/cart_repository.dart';
+import 'package:app_ban_giay/module/payment/payment_index.dart';
+import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -27,35 +26,43 @@ class CartScreen extends StatelessWidget {
             data: (data) {
               return SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 24),
-                      child: Wrap(
-                        alignment: WrapAlignment.center,
-                        spacing: 10,
-                        runSpacing: 10,
-                        direction: Axis.horizontal,
-                        children: data.isNotEmpty ?? false
-                            ? data
-                                .map(
-                                  (e) => SizedBox(
-                                    width: (MediaQuery.of(context).size.width -
-                                            50 -
-                                            10) /
-                                        2,
-                                    child: ProductItemWidget(
-                                      model: e.model,
-                                      showCartCount: true,
-                                      showCartCountEdit: true,
-                                      showDelete: true,
-                                    ),
-                                  ),
-                                )
-                                .toList()
-                            : [
-                                const Text(
-                                    "Chưa có sản phẩm nào trong giỏ hàng"),
-                              ],
+                  child: RefreshIndicator(
+                    color: const Color(0xffF15E2C),
+                    onRefresh: () => ref.refresh(getCartVariantList.future),
+                    child: SingleChildScrollView(
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 24, horizontal: 15),
+                          child: Wrap(
+                            alignment: WrapAlignment.spaceBetween,
+                            spacing: 10,
+                            runSpacing: 10,
+                            direction: Axis.horizontal,
+                            children: data.isNotEmpty
+                                ? data
+                                    .map(
+                                      (e) => SizedBox(
+                                        width:
+                                            (MediaQuery.of(context).size.width -
+                                                    50 -
+                                                    10) /
+                                                2,
+                                        child: ProductItemWidget(
+                                          model: e,
+                                          showCartCount: true,
+                                          showCartCountEdit: true,
+                                          showDelete: true,
+                                        ),
+                                      ),
+                                    )
+                                    .toList()
+                                : [
+                                    const Text(
+                                        "Chưa có sản phẩm nào trong giỏ hàng"),
+                                  ],
+                          ),
+                        ),
                       ),
                     ),
                   ));
@@ -94,9 +101,10 @@ class CartScreen extends StatelessWidget {
               final provider = ref.watch(getCartVariantList);
               return provider.when(
                 data: (data) {
-                   double totalPrice = 0;
+                  double totalPrice = 0;
                   for (var element in data) {
-                    totalPrice += element.salePrice ?? element.price;
+                    totalPrice +=
+                        element.salePrice == 0 ? element.price : element.salePrice;
                   }
                   return Text(
                     Func.formatPrice(totalPrice),
@@ -116,7 +124,8 @@ class CartScreen extends StatelessWidget {
                   );
                 },
                 loading: () {
-                  return const CircularProgressIndicator(color: Color(0xffF15E2C));
+                  return const CircularProgressIndicator(
+                      color: Color(0xffF15E2C));
                 },
               );
             }),

@@ -13,7 +13,6 @@ final getCartVariantList = FutureProvider<List<VariantModel>>((ref) async {
   if (box.keys.isEmpty) {
     return [];
   }
-  print(box.keys.toList().toString());
   final result = await db
       .collection("variant")
       .where(FieldPath.documentId, whereIn: box.keys.toList())
@@ -27,7 +26,7 @@ final getCartVariantList = FutureProvider<List<VariantModel>>((ref) async {
             .get()
             .then((value) =>
                 ColorModel.fromMap(value.data() as Map<String, dynamic>));
-        final sizeRef = await (element.data()['idColor'] as DocumentReference)
+        final sizeRef = await (element.data()['idSize'] as DocumentReference)
             .get()
             .then((value) =>
                 SizeModel.fromMap(value.data() as Map<String, dynamic>));
