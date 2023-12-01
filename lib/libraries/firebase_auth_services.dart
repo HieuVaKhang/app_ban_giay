@@ -3,11 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class FirebaseAuthService {
+  final  _auth = FirebaseAuth.instance;
+
   Future<User?> signUpWithEmailAndPassword(
       String email, String password) async {
     try {
       final credential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -23,12 +25,13 @@ class FirebaseAuthService {
       print(e);
       return null;
     }
+    return null;
   }
 
   Future<User?> signInWithEmailAndPassword(
       String email, String password, BuildContext context) async {
     try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final credential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -64,19 +67,24 @@ class FirebaseAuthService {
       print(e);
       return null;
     }
+    return null;
   }
+
 
   // Add User Firestore Database
   final CollectionReference users =
       FirebaseFirestore.instance.collection('users');
-  Future<void> addUser(String id, String name, String pass) {
+  Future<void> addUser(String id, String name, String pass ,String email) {
     return users
         .add({
           'id': id,
           'userName': name,
           'password': pass,
+          'email': email,
         })
         .then((value) => print('User added'))
         .catchError((error) => print('Failed to add user: $error'));
   }
 }
+
+
