@@ -1,5 +1,5 @@
 import 'package:app_ban_giay/libraries/function.dart';
-import 'package:app_ban_giay/module/home/repository/home_repo.dart';
+import 'package:app_ban_giay/module/product_detail/provider/product_detail_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,275 +15,263 @@ class ProductDetailScreen extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
       ),
-      body: SingleChildScrollView(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          productProvider.when(
-            data: (data) {
-              final colorProvider = ref.watch(colorProductDetailProvider);
-              final sizeProvider = ref.watch(sizeProductDetailProvider);
-              final variantProvider = ref.watch(variantProductDetailProvider);
-              final selectedColor =
-                  ref.watch(selectedColorProductDetailProvider);
-              String activeColor = variantProvider.first.color.id ?? '';
-              String productImg = data.photo ?? '';
-              if (selectedColor.isNotEmpty) {
-                productImg = variantProvider
-                        .firstWhere(
-                            (element) => element.color.id == selectedColor)
-                        .model
-                        .photo ??
-                    productImg;
-                activeColor = selectedColor ?? activeColor;
-              }
-              return Column(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: Image.network(productImg,
-                        fit: BoxFit.cover, width: double.infinity),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.only(
-                        top: 20, left: 20, right: 20, bottom: 10),
-                    child: Text(
-                      data?.name ?? "",
-                      textAlign: TextAlign.left,
-                      style: const TextStyle(fontSize: 20),
+      body: (productProvider.loading == 0)
+          ? SingleChildScrollView(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: Image.network(productProvider.product.photo ?? "",
+                          fit: BoxFit.cover, width: double.infinity),
                     ),
-                  ),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.only(
+                          top: 20, left: 20, right: 20, bottom: 10),
+                      child: Text(
+                        productProvider.product.name ?? "",
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                    ),
 
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        top: 20, left: 20, right: 20, bottom: 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          variantProvider
-                                  .firstWhere((element) =>
-                                      element.color.id == selectedColor)
-                                  .color
-                                  .name ??
-                              '',
-                          style:
-                              TextStyle(color: Color(0xff222222), fontSize: 15),
-                        ),
-                        DropdownButton(items: const [
-                          DropdownMenuItem(
-                              child: Text(
-                            'Size',
-                            style: TextStyle(color: Colors.black, fontSize: 15),
-                          ))
-                        ], onChanged: null)
-                      ],
-                    ),
-                  ),
-                  SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: colorProvider.map((e) {
-                        final img = variantProvider.firstWhere(
-                          (element) {
-                            return element.color.id == e.id;
-                          },
-                        );
-                        return InkWell(
-                          onTap: () {
-                            ref
-                                .read(
-                                    selectedColorProductDetailProvider.notifier)
-                                .update((state) => e?.id ?? '');
-                          },
-                          child: Opacity(
-                            opacity: e.id == activeColor ? 1 : 0.5,
-                            child: Container(
-                              margin: const EdgeInsets.only(right: 10),
-                              width: 78,
-                              height: 78,
-                              child: Image.network(
-                                img.model?.photo ?? "",
-                              ),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Text(
-                      'iPhone 14 Pro Max comes with 6.7 inches LTPO Super Retina XDR OLED, 120Hz, Dolby Vision Display, Chipset Apple A16 Bionic (4 nm), OS iOS 16, CPU Hexa-core, GPU Apple GPU (5-core graphics), 128GB Storage. It having 48 MP + 12 MP + 12 MP Triple Rear Camera & 12 MP Front Camera.',
-                      style: TextStyle(
-                          height: 2, fontSize: 12, color: Color(0xff5B5B5B)),
-                      textAlign: TextAlign.justify,
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, right: 20, bottom: 0),
-                    child: Container(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      decoration: const BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(color: Color(0xffF0F0F0)))),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 20, left: 20, right: 20, bottom: 0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Mô tả sản phẩm ',
-                            style: TextStyle(
-                                fontSize: 12, color: Color(0xff5B5B5B)),
+                          Text(
+                            productProvider.product.colorName ?? "",
+                            style: const TextStyle(
+                                color: Color(0xff222222), fontSize: 15),
                           ),
-                          Image.asset(
-                            'assets/images/arrow.png',
-                          )
+                          DropdownButton(items: const [
+                            DropdownMenuItem(
+                                child: Text(
+                              'Size',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 15),
+                            ))
+                          ], onChanged: null)
                         ],
                       ),
                     ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(
-                        top: 15, left: 20, right: 20, bottom: 5),
-                    child: Text(
-                      'Số lượng',
-                      style: TextStyle(fontSize: 13, color: Color(0xff5B5B5B)),
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, right: 20, bottom: 15),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: 116,
-                          height: 49,
-                          margin: const EdgeInsets.fromLTRB(0, 12, 0, 0),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 18, vertical: 7),
-                          decoration: const BoxDecoration(
-                              color: Color(0xffF3F3F3),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30))),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              InkWell(
-                                child: Center(
-                                  child: Icon(
-                                    Icons.remove,
-                                    color: Colors.black,
-                                    size: 10,
-                                  ),
+                    SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: productProvider.colors.map((e) {
+                          final img = productProvider.variants.firstWhere(
+                            (element) {
+                              return element.color.id == e.id;
+                            },
+                          );
+                          return InkWell(
+                            onTap: () {
+                              ref
+                                  .read(productDetailProvider.notifier)
+                                  .changeSelectedColor(e);
+                            },
+                            child: Opacity(
+                              opacity: e.id == productProvider.product.colorId
+                                  ? 1
+                                  : 0.5,
+                              child: Container(
+                                margin: const EdgeInsets.only(right: 10),
+                                width: 78,
+                                height: 78,
+                                child: Image.network(
+                                  img.model.photo ?? "",
                                 ),
-                              ),
-                              Text(
-                                "2",
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 15),
-                              ),
-                              InkWell(
-                                child: Icon(
-                                  Icons.add_rounded,
-                                  color: Colors.black,
-                                  size: 10,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 25, vertical: 12),
-                          decoration: const BoxDecoration(
-                              color: Color(0xffF15E2C),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30))),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/images/cart.png',
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.only(left: 10),
-                                child: Text(
-                                  'Thêm vào giỏ hàng',
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.white),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  // Padding(
-                  //   padding: const EdgeInsets.only(left: 20, bottom: 10),
-                  //   child: Container(
-                  //     padding: const EdgeInsets.all(10),
-                  //     decoration: const BoxDecoration(
-                  //         borderRadius: BorderRadius.all(Radius.circular(6)),
-                  //         color: Color(0xffE7E7E7)),
-                  //     child: const Text(
-                  //       'Đã bán 8.374',
-                  //       textAlign: TextAlign.left,
-                  //       style: TextStyle(
-                  //         fontSize: 13,
-                  //         color: Colors.black,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: Container(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      decoration: const BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(color: Color(0xffF0F0F0)))),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(right: 10),
-                              child: Text(
-                                Func.formatPrice(data?.price ?? 0),
-                                style: const TextStyle(
-                                    color: Color(0xffF15E2C), fontSize: 18),
                               ),
                             ),
-                            Text(
-                              Func.formatPrice(data?.salePrice ?? 0),
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  decoration: TextDecoration.lineThrough),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Text(
+                        productProvider.product.description ?? "",
+                        style: const TextStyle(
+                            height: 2, fontSize: 12, color: Color(0xff5B5B5B)),
+                        textAlign: TextAlign.justify,
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 20, right: 20, bottom: 0),
+                      child: Container(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        decoration: const BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(color: Color(0xffF0F0F0)))),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Mô tả sản phẩm ',
+                              style: TextStyle(
+                                  fontSize: 12, color: Color(0xff5B5B5B)),
+                            ),
+                            Image.asset(
+                              'assets/images/arrow.png',
                             )
                           ],
                         ),
                       ),
                     ),
+                    const Padding(
+                      padding: EdgeInsets.only(
+                          top: 15, left: 20, right: 20, bottom: 5),
+                      child: Text(
+                        'Số lượng',
+                        style:
+                            TextStyle(fontSize: 13, color: Color(0xff5B5B5B)),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20, right: 20, bottom: 15),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: 116,
+                            height: 49,
+                            margin: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 18, vertical: 7),
+                            decoration: const BoxDecoration(
+                                color: Color(0xffF3F3F3),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(30))),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                InkWell(
+                                  onTap: () => ref
+                                      .read(productDetailProvider.notifier)
+                                      .changeQuantity(false),
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.remove,
+                                      color: Colors.black,
+                                      size: 10,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  productProvider.quantity.toString(),
+                                  style: const TextStyle(
+                                      color: Colors.black, fontSize: 15),
+                                ),
+                                InkWell(
+                                  onTap: () => ref
+                                      .read(productDetailProvider.notifier)
+                                      .changeQuantity(true),
+                                  child: const Icon(
+                                    Icons.add_rounded,
+                                    color: Colors.black,
+                                    size: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 25, vertical: 12),
+                            decoration: const BoxDecoration(
+                                color: Color(0xffF15E2C),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(30))),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/images/cart.png',
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 10),
+                                  child: Text(
+                                    'Thêm vào giỏ hàng',
+                                    style: TextStyle(
+                                        fontSize: 15, color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+// Padding(
+//   padding: const EdgeInsets.only(left: 20, bottom: 10),
+//   child: Container(
+//     padding: const EdgeInsets.all(10),
+//     decoration: const BoxDecoration(
+//         borderRadius: BorderRadius.all(Radius.circular(6)),
+//         color: Color(0xffE7E7E7)),
+//     child: const Text(
+//       'Đã bán 8.374',
+//       textAlign: TextAlign.left,
+//       style: TextStyle(
+//         fontSize: 13,
+//         color: Colors.black,
+//       ),
+//     ),
+//   ),
+// ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: Container(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        decoration: const BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(color: Color(0xffF0F0F0)))),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: Text(
+                                  Func.formatPrice(
+                                      productProvider.product.price ?? 0),
+                                  style: const TextStyle(
+                                      color: Color(0xffF15E2C), fontSize: 18),
+                                ),
+                              ),
+                              Text(
+                                Func.formatPrice(
+                                    productProvider.product.salePrice ?? 0),
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    decoration: TextDecoration.lineThrough),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]),
+            )
+          : (productProvider.loading > 0
+              ? const Center(
+                  child: CircularProgressIndicator(
+                    color: Color(0xffF15E2C),
                   ),
-                ],
-              );
-            },
-            error: ((error, stackTrace) => const Text("Dữ liệu lỗi")),
-            loading: () => const Center(
-              child: CircularProgressIndicator(
-                color: Color(0xffF15E2C),
-              ),
-            ),
-          ),
-        ]),
-      ),
+                )
+              : const Center(
+                  child: Text("Đã có lỗi xảy ra, vui lòng thử lại sau"),
+                )),
       bottomNavigationBar: Container(
         color: const Color(0xffFF9672),
         padding: const EdgeInsets.symmetric(vertical: 10),

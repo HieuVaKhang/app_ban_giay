@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:math';
 
 import 'package:app_ban_giay/libraries/config.dart';
@@ -31,12 +30,12 @@ class CartNotifier extends Notifier<CartState> {
   //   );
   // }
 
-  void updateListProduct(List<VariantModel> listModal) {
-    double totalPrice = 0;
-    for (var element in listModal) {
-      totalPrice += element.salePrice ?? element.price;
-    }
-  }
+  // void updateListProduct(List<VariantModel> listModal) {
+  //   double totalPrice = 0;
+  //   for (var element in listModal) {
+  //     totalPrice += element.salePrice ?? element.price;
+  //   }
+  // }
 
   double caculateTotal(List<VariantModel> listModal) {
     if (listModal.isNotEmpty) {
