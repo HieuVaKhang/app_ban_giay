@@ -1,13 +1,17 @@
-import 'package:app_ban_giay/module/product/model/product_model.dart';
-import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
+import 'package:app_ban_giay/libraries/config.dart';
+import 'package:app_ban_giay/module/cart/model/variant_model.dart';
+import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
+import 'package:app_ban_giay/module/cart/repository/cart_repository.dart';
+import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
 
 class CartBottomSheetModalWidget extends StatelessWidget {
   const CartBottomSheetModalWidget({Key? key, required this.model})
       : super(key: key);
 
-  final ProductModel model;
+  final VariantModel model;
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +93,27 @@ class CartBottomSheetModalWidget extends StatelessWidget {
                     ),
                   ),
                   InkWell(
-                    onTap: () => context.pop(),
+                    onTap: () async {
+                      await Config.providerContainer
+                          .read(cartProvider.notifier)
+                          .deleteCartItem(model.id)
+                          .then((value) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => const Center(
+                            child: CircularProgressIndicator(
+                              color: Color(0xffF15E2C),
+                            ),
+                          ),
+                        );
+                        Config.providerContainer
+                            .refresh(getCartVariantList.future)
+                            .whenComplete(() {
+                          context.pop();
+                          context.pop();
+                        });
+                      });
+                    },
                     child: Container(
                       width: (MediaQuery.of(context).size.width - 60 - 10) / 2,
                       height: 50,

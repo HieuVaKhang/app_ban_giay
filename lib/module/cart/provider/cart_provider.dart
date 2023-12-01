@@ -1,10 +1,8 @@
-import 'dart:developer';
 import 'dart:math';
 
 import 'package:app_ban_giay/libraries/config.dart';
 import 'package:app_ban_giay/module/cart/model/variant_model.dart';
 import 'package:app_ban_giay/module/cart/provider/cart_state.dart';
-import 'package:app_ban_giay/module/cart/repository/cart_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -32,12 +30,12 @@ class CartNotifier extends Notifier<CartState> {
   //   );
   // }
 
-  void updateListProduct(List<VariantModel> listModal) {
-    double totalPrice = 0;
-    for (var element in listModal) {
-      totalPrice += element.salePrice ?? element.price;
-    }
-  }
+  // void updateListProduct(List<VariantModel> listModal) {
+  //   double totalPrice = 0;
+  //   for (var element in listModal) {
+  //     totalPrice += element.salePrice ?? element.price;
+  //   }
+  // }
 
   double caculateTotal(List<VariantModel> listModal) {
     if (listModal.isNotEmpty) {
@@ -45,7 +43,7 @@ class CartNotifier extends Notifier<CartState> {
     }
     double totalPrice = 0;
     for (var element in listModal) {
-      totalPrice += element.salePrice ?? element.price;
+      totalPrice += element.salePrice;
     }
     return totalPrice;
   }
@@ -55,9 +53,24 @@ class CartNotifier extends Notifier<CartState> {
     return box.keys.length;
   }
 
+  Future<bool> deleteCartItem(String id) async {
+    final box = Hive.box<int>(Config.orderBox);
+    try {
+      await box.delete(id);
+      print(box.keys);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<void> factoryBox() async {
     final box = Hive.box<int>(Config.orderBox),
         listVariant = [
+          "0bbffYoFKf7dLHYjnyna",
+          "0kcAmuKAqOUhBTyNbmgX",
+          "1BtGNlorAAh6LnSst8xG",
+          "1GL042QTM1JyEalRNNce",
           "1HxCrzTMKk0vL32rI1j6",
           "1cvs1BeSze4bbrWjqNXU",
           "1dt66pnNRubcKacjObGU",

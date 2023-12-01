@@ -3,13 +3,13 @@ import 'dart:convert';
 
 class UserInfoModel {
   final String? id;
-  final String? name;
+  final String? idUser;
   final String? fullname;
   final String? address;
   final String? phone;
   UserInfoModel({
     this.id,
-    this.name,
+    this.idUser,
     this.fullname,
     this.address,
     this.phone,
@@ -17,14 +17,14 @@ class UserInfoModel {
 
   UserInfoModel copyWith({
     String? id,
-    String? name,
+    String? idUser,
     String? fullname,
     String? address,
     String? phone,
   }) {
     return UserInfoModel(
       id: id ?? this.id,
-      name: name ?? this.name,
+      idUser: idUser ?? this.idUser,
       fullname: fullname ?? this.fullname,
       address: address ?? this.address,
       phone: phone ?? this.phone,
@@ -34,7 +34,7 @@ class UserInfoModel {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'name': name,
+      'idUser': idUser,
       'fullname': fullname,
       'address': address,
       'phone': phone,
@@ -44,7 +44,7 @@ class UserInfoModel {
   factory UserInfoModel.fromMap(Map<String, dynamic> map) {
     return UserInfoModel(
       id: map['id'] != null ? map['id'] as String : null,
-      name: map['name'] != null ? map['name'] as String : null,
+      idUser: map['idUser'] != null ? map['idUser'] as String : null,
       fullname: map['fullname'] != null ? map['fullname'] as String : null,
       address: map['address'] != null ? map['address'] as String : null,
       phone: map['phone'] != null ? map['phone'] as String : null,
@@ -57,7 +57,7 @@ class UserInfoModel {
 
   @override
   String toString() {
-    return 'UserInfoModel(id: $id, name: $name, fullname: $fullname, address: $address, phone: $phone)';
+    return 'UserInfoModel(id: $id, idUser: $idUser, fullname: $fullname, address: $address, phone: $phone)';
   }
 
   @override
@@ -66,7 +66,7 @@ class UserInfoModel {
   
     return 
       other.id == id &&
-      other.name == name &&
+      other.idUser == idUser &&
       other.fullname == fullname &&
       other.address == address &&
       other.phone == phone;
@@ -75,7 +75,7 @@ class UserInfoModel {
   @override
   int get hashCode {
     return id.hashCode ^
-      name.hashCode ^
+      idUser.hashCode ^
       fullname.hashCode ^
       address.hashCode ^
       phone.hashCode;

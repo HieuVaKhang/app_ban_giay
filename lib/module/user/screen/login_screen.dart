@@ -1,10 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import 'package:app_ban_giay/libraries/config.dart';
 import 'package:app_ban_giay/libraries/firebase_auth_services.dart';
 import 'package:app_ban_giay/libraries/function.dart';
 import 'package:app_ban_giay/module/home/home_index.dart';
+import 'package:app_ban_giay/module/user/provider/user_provider.dart';
 import 'package:app_ban_giay/module/user/screen/register_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: const Key("/login"));
@@ -112,24 +114,45 @@ class _LoginScreenState extends State<LoginScreen> {
                 String email = _emailController.text;
                 String password = _passwordController.text;
 
-                User? user =
-                    await _auth.signInWithEmailAndPassword(email, password);
-                if (user?.uid.isNotEmpty ?? false) {
-                  print('Đăng nhập thành công!');
-                  context.go(Func.convertName(const HomeIndex().key));
-                } else {
-                  print('Some error occured!');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text(
-                      'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 12,
-                      ),
-                    )),
-                  );  
-                }
+                await _auth
+                    .signInWithEmailAndPassword(email, password, context)
+                    .then((value) async {
+                  print(value);
+                  if (value?.uid.isNotEmpty ?? false) {
+                    await getUser(value?.uid ?? "").then((value) {
+                      if (Config.providerContainer
+                              .read(userProvider)
+                              .id
+                              ?.isNotEmpty ??
+                          false) {
+                        context.go(Func.convertName(const HomeIndex().key));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text(
+                            'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                            ),
+                          )),
+                        );
+                      }
+                    });
+                  } else {
+                    print('Some error occured!');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text(
+                        'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12,
+                        ),
+                      )),
+                    );
+                  }
+                });
               },
               child: Container(
                 margin: const EdgeInsets.only(top: 20, bottom: 20),
@@ -192,4 +215,3 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 }
-
