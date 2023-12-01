@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class FirebaseAuthService {
-  FirebaseAuth _auth = FirebaseAuth.instance;
-
   Future<User?> signUpWithEmailAndPassword(
       String email, String password) async {
     try {
@@ -19,13 +18,15 @@ class FirebaseAuthService {
       } else if (e.code == 'email-already-in-use') {
         print('The account already exists for that email.');
       }
+      return null;
     } catch (e) {
       print(e);
+      return null;
     }
   }
 
   Future<User?> signInWithEmailAndPassword(
-      String email, String password) async {
+      String email, String password, BuildContext context) async {
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
@@ -35,11 +36,33 @@ class FirebaseAuthService {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text(
+            'Tài khoản không tồn tại.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12,
+            ),
+          )),
+        );
       } else if (e.code == 'wrong-password') {
         print('Wrong password provided for that user.');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text(
+            'Mật khẩu không chính xác.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12,
+            ),
+          )),
+        );
       }
+      return null;
     } catch (e) {
       print(e);
+      return null;
     }
   }
 

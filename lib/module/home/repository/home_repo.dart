@@ -39,7 +39,7 @@ final getCategoryProductProvider =
   return listCategory;
 });
 
-final homeListProductProvider = FutureProvider<List<ProductModel>>((ref) async {
+final homeListProductProvider = FutureProvider<List<VariantModel>>((ref) async {
   final selectedCategory = ref.watch(selectedCategoryProvider);
   final db = FirebaseFirestore.instance;
   if (selectedCategory.id?.isNotEmpty ?? false) {
@@ -52,50 +52,71 @@ final homeListProductProvider = FutureProvider<List<ProductModel>>((ref) async {
         .get()
         .then((value) async {
       if (value.docs.isNotEmpty) {
-        var listSP = <ProductModel>[];
+        var listSP = <VariantModel>[];
         for (var element in value.docs) {
           final varial = await db
               .collection('variant')
               .where("idProduct",
                   isEqualTo: db.collection("product").doc(element.id))
+              .limit(1)
               .get()
-              .then((value) => value.docs.first.data()['photo'] ?? "");
-          listSP.add(ProductModel(
-              id: element.id,
-              name: element.data()['name'],
-              photo: varial ?? "",
-              price: (element.data()['price'] as int).toDouble(),
-              salePrice: (element.data()['salePrice'] as int).toDouble()));
+              .then(
+                (value) => VariantModel(
+                  color: ColorModel(),
+                  size: SizeModel(),
+                  id: value.docs.first.id,
+                  price: (element.data()['price'] as int).toDouble(),
+                  salePrice: (element.data()['salePrice'] as int).toDouble(),
+                  quantity: 0,
+                  model: ProductModel(
+                      id: element.id,
+                      name: element.data()['name'],
+                      photo: value.docs.first.data()['photo'] ?? "",
+                      price: (element.data()['price'] as int).toDouble(),
+                      salePrice:
+                          (element.data()['salePrice'] as int).toDouble()),
+                ),
+              );
+          listSP.add(varial);
         }
 
         return listSP;
       }
-      return <ProductModel>[];
+      return <VariantModel>[];
     });
     return result;
   }
   final result =
       await db.collection('product').limit(8).get().then((value) async {
     if (value.docs.isNotEmpty) {
-      var listSP = <ProductModel>[];
+      var listSP = <VariantModel>[];
       for (var element in value.docs) {
         final varial = await db
             .collection('variant')
             .where("idProduct",
                 isEqualTo: db.collection("product").doc(element.id))
             .get()
-            .then((value) => value.docs.first.data()['photo'] ?? "");
-        listSP.add(ProductModel(
-            id: element.id,
-            name: element.data()['name'],
-            photo: varial ?? "",
-            price: (element.data()['price'] as int).toDouble(),
-            salePrice: (element.data()['salePrice'] as int).toDouble()));
+            .then((value) => VariantModel(
+                  color: ColorModel(),
+                  size: SizeModel(),
+                  id: value.docs.first.id,
+                  price: (element.data()['price'] as int).toDouble(),
+                  salePrice: (element.data()['salePrice'] as int).toDouble(),
+                  quantity: 0,
+                  model: ProductModel(
+                      id: element.id,
+                      name: element.data()['name'],
+                      photo: value.docs.first.data()['photo'] ?? "",
+                      price: (element.data()['price'] as int).toDouble(),
+                      salePrice:
+                          (element.data()['salePrice'] as int).toDouble()),
+                ));
+        listSP.add(varial);
       }
 
       return listSP;
     }
-    return <ProductModel>[];
+    return <VariantModel>[];
   });
   return result;
 });
@@ -112,7 +133,7 @@ final selectedColorProductDetailProvider = StateProvider<String>((ref) {
   return '';
 });
 
-final productDetailProvider = FutureProvider<ProductModel>((ref) async {
+final futureProductDetailProvider = FutureProvider<ProductModel>((ref) async {
   final selected = ref.watch(selectedProductDetailProvider);
   if (selected.isEmpty) {
     return ProductModel();
@@ -120,50 +141,48 @@ final productDetailProvider = FutureProvider<ProductModel>((ref) async {
   final db = FirebaseFirestore.instance;
   final result =
       await db.collection('product').doc(selected).get().then((value) async {
-    final categoryId = await ((value.data()
-            as Map<String, dynamic>)['idCategory'] as DocumentReference)
-        .get()
-        .then((value) => CategoryModel(
-              id: value.id,
-              name: (value.data() as Map<String, dynamic>)['name'],
-            ));
-    final materialId = await ((value.data()
-            as Map<String, dynamic>)['idMaterial'] as DocumentReference)
-        .get()
-        .then((value) => CategoryModel(
-              id: value.id,
-              name: (value.data() as Map<String, dynamic>)['name'],
-            ));
-    final genderId = await ((value.data() as Map<String, dynamic>)['idGender']
-            as DocumentReference)
-        .get()
-        .then((value) => CategoryModel(
-              id: value.id,
-              name: (value.data() as Map<String, dynamic>)['name'],
-            ));
+    // final categoryId = await ((value.data()
+    //         as Map<String, dynamic>)['idCategory'] as DocumentReference)
+    //     .get()
+    //     .then((value) => CategoryModel(
+    //           id: value.id,
+    //           name: (value.data() as Map<String, dynamic>)['name'],
+    //         ));
+    // final materialId = await ((value.data()
+    //         as Map<String, dynamic>)['idMaterial'] as DocumentReference)
+    //     .get()
+    //     .then((value) => CategoryModel(
+    //           id: value.id,
+    //           name: (value.data() as Map<String, dynamic>)['name'],
+    //         ));
+    // final genderId = await ((value.data() as Map<String, dynamic>)['idGender']
+    //         as DocumentReference)
+    //     .get()
+    //     .then((value) => CategoryModel(
+    //           id: value.id,
+    //           name: (value.data() as Map<String, dynamic>)['name'],
+    //         ));
     final variantId = await (db
             .collection('variant')
             .where('idProduct', isEqualTo: db.doc('product/${selected}')))
         .get()
         .then((value) async {
-      final list_variant = <VariantModel>[];
+      final listVariant = <VariantModel>[];
       if (value.docs.isNotEmpty) {
         for (var element in value.docs) {
-          final color = await ((element.data()
-                  as Map<String, dynamic>)['idColor'] as DocumentReference)
+          final color = await ((element.data())['idColor'] as DocumentReference)
               .get()
               .then((value) => ColorModel(
                     id: value.id,
                     name: (value.data() as Map<String, dynamic>)['name'],
                   ));
-          final size = await ((element.data() as Map<String, dynamic>)['idSize']
-                  as DocumentReference)
+          final size = await ((element.data())['idSize'] as DocumentReference)
               .get()
               .then((value) => SizeModel(
                     id: value.id,
                     name: (value.data() as Map<String, dynamic>)['name'],
                   ));
-          list_variant.add(VariantModel(
+          listVariant.add(VariantModel(
               model: ProductModel(
                 photo: element.data()['photo'],
               ),
@@ -175,7 +194,7 @@ final productDetailProvider = FutureProvider<ProductModel>((ref) async {
               quantity: 0));
         }
       }
-      return list_variant;
+      return listVariant;
     });
     print(variantId.toString());
     final listColor = <ColorModel>[];
@@ -195,7 +214,6 @@ final productDetailProvider = FutureProvider<ProductModel>((ref) async {
       ref
           .read(sizeProductDetailProvider.notifier)
           .update((state) => [...listSize]);
-  
     }
     ref
         .read(variantProductDetailProvider.notifier)
