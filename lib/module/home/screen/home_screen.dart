@@ -3,21 +3,23 @@ import 'dart:math';
 import 'package:app_ban_giay/libraries/config.dart';
 import 'package:app_ban_giay/libraries/function.dart';
 import 'package:app_ban_giay/module/cart/cart_index.dart';
+import 'package:app_ban_giay/module/cart/model/variant_model.dart';
 import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
 import 'package:app_ban_giay/module/home/home_index.dart';
 import 'package:app_ban_giay/module/home/provider/home_provider.dart';
 import 'package:app_ban_giay/module/home/repository/home_repo.dart';
+import 'package:app_ban_giay/module/product/model/color_model.dart';
 import 'package:app_ban_giay/module/home/screen/widget/product_list_item_widget.dart';
 import 'package:app_ban_giay/module/news/repository/news_repo.dart';
 import 'package:app_ban_giay/module/news/screen/widget/news_category_screen.dart';
 import 'package:app_ban_giay/module/product/model/product_model.dart';
+import 'package:app_ban_giay/module/product/model/size_model.dart';
 import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
 import 'package:app_ban_giay/module/news/model/news_model.dart';
 import 'package:app_ban_giay/module/news/screen/widget/news_item_widget.dart';
 import 'package:app_ban_giay/module/product_category/product_category_index.dart';
 import 'package:app_ban_giay/module/product_detail/product_detail_index.dart';
 import 'package:app_ban_giay/module/user/screen/user_screen.dart';
-import 'package:app_ban_giay/module/user/user_index.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -85,6 +87,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 builder: (context, ref, child) {
                   return InkWell(
                     onTap: () {
+                      // Config.providerContainer
+                      //     .read(cartProvider.notifier)
+                      //     .factoryBox();
                       context.push(Func.convertName(const CartIndex().key));
                     },
                     child: Stack(children: [
