@@ -1,9 +1,6 @@
-import 'dart:developer';
-
 import 'package:app_ban_giay/libraries/function.dart';
 import 'package:app_ban_giay/module/user/model/user_model.dart';
 import 'package:app_ban_giay/module/user/screen/login_screen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -94,47 +91,64 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           InkWell(
               onTap: () async {
+                // User? user = await _auth.signUpWithEmailAndPassword(
+                //     _emailController.text, _passwordController.text);
+                // String id = user?.uid ?? "";
+                // if (id.isNotEmpty) {
+                //   await _auth.addUser(id, "Chưa Đặt Tên", _passwordController.text);
+
+                //   print('Đăng ký thành công!');
+                //   ScaffoldMessenger.of(context).showSnackBar(
+                //     SnackBar(
+                //         content: Text(
+                //       'Đăng ký thành công!',
+                //       textAlign: TextAlign.center,
+                //       style: TextStyle(
+                //         fontSize: 12,
+                //       ),
+                //     )),
+                //   );
+                //   context.push(Func.convertName(const LoginScreen().key));
+                // } else {
+                //   print('Some error occured!');
+                //   ScaffoldMessenger.of(context).showSnackBar(
+                //     SnackBar(
+                //         content: Text(
+                //       'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.',
+                //       textAlign: TextAlign.center,
+                //       style: TextStyle(
+                //         fontSize: 12,
+                //       ),
+                //     )),
+                //   );
+                // }
+
                 User? user = await _auth.signUpWithEmailAndPassword(
                     _emailController.text, _passwordController.text);
                 String id = user?.uid ?? "";
+
                 if (id.isNotEmpty) {
-                  // final db = FirebaseFirestore.instance;
-                  // final userAccount = db.collection("user");
-                  // await userAccount.add({
-                  //   "id": db.doc(id),
-                  //   "userName": db.doc('Chưa Đặt Tên'),
-                  //   "email": db.doc(_emailController.text),
-                  //   "password": db.doc(_passwordController.text),
-                  // });
+                  await _auth.addUser(
+                      id, "Chưa Đặt Tên", _passwordController.text, _emailController.text);
 
-                  // print(userAccount);
+                  // Lấy container của provider scope hiện tại
+                  final container = ProviderContainer();
 
-                  await _auth.addUser(id, "Chưa Đặt Tên", _passwordController.text);
+                  // Cập nhật giá trị trong UserProvider
+                  container.read(UserProvider).state = UserModel(
+                    id: 'id',
+                    userName: 'Chưa Đặt Tên',
+                    password: _passwordController.text,
+                    email: _emailController.text,
+                  );
 
                   print('Đăng ký thành công!');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text(
-                      'Đăng ký thành công!',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 12,
-                      ),
-                    )),
-                  );
+                  _showSnackBar('Đăng ký thành công!');
                   context.push(Func.convertName(const LoginScreen().key));
                 } else {
                   print('Some error occured!');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text(
-                      'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 12,
-                      ),
-                    )),
-                  );
+                  _showSnackBar(
+                      'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.');
                 }
               },
               child: Container(
@@ -191,8 +205,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 12,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 final UserProvider = StateProvider<UserModel>((ref) {
-  return UserModel(id: '', userName: '', password: '');
+  return UserModel(id: '', userName: '', password: '', email: '');
 });
