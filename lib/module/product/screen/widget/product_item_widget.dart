@@ -180,7 +180,7 @@ class ProductItemWidget extends StatelessWidget {
                                 color: Colors.white, fontSize: 10),
                           ),
                         ),
-                      if (model.color.name != null)
+                      if (model.size.name != null)
                         Container(
                           decoration: const BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(10)),

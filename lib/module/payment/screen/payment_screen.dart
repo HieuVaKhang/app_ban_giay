@@ -1,20 +1,22 @@
-import 'package:app_ban_giay/libraries/function.dart';
-import 'package:app_ban_giay/module/cart/model/user_info_model.dart';
-import 'package:app_ban_giay/module/cart/model/variant_model.dart';
-import 'package:app_ban_giay/module/payment/screen/widget/user_info_widget.dart';
-import 'package:app_ban_giay/module/payment_method/payment_method_index.dart';
-import 'package:app_ban_giay/module/product/model/color_model.dart';
-import 'package:app_ban_giay/module/product/model/product_model.dart';
-import 'package:app_ban_giay/module/product/model/size_model.dart';
-import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
+import 'package:app_ban_giay/module/payment/provider/payment_provider.dart';
+import 'package:app_ban_giay/module/user_info/user_info_index.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class PaymentScreen extends StatelessWidget {
+import 'package:app_ban_giay/libraries/config.dart';
+import 'package:app_ban_giay/libraries/function.dart';
+import 'package:app_ban_giay/module/cart/repository/cart_repository.dart';
+import 'package:app_ban_giay/module/payment/screen/widget/user_info_widget.dart';
+import 'package:app_ban_giay/module/payment_method/payment_method_index.dart';
+import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
+
+class PaymentScreen extends ConsumerWidget {
   const PaymentScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    final userIn4Provider = ref.watch(userInfoProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -24,103 +26,169 @@ class PaymentScreen extends StatelessWidget {
       ),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(bottom: 20),
-                  child: const Text(
-                    "Địa chỉ giao hàng",
-                    style: TextStyle(fontSize: 15, color: Color(0xff222222)),
-                  ),
-                ),
-                UserInfoWidget(
-                  model: UserInfoModel(
-                      name: "Nhà", address: "123 Quang Trung, Gò Vấp, Tp. HCM"),
-                  canEdit: true,
-                ),
-                const Divider(
-                  thickness: 1,
-                  color: Color(0xffF0F0F0),
-                  indent: 0,
-                  endIndent: 0,
-                  height: 40,
-                ),
-                Container(
-                  margin: const EdgeInsets.only(bottom: 20),
-                  child: const Text(
-                    "Danh sách sản phẩm",
-                    style: TextStyle(color: Color(0xff222222), fontSize: 15),
-                  ),
-                ),
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 10,
-                  runSpacing: 10,
-                  direction: Axis.horizontal,
-                  children: List.generate(
-                    10,
-                    (index) => SizedBox(
-                      width: (MediaQuery.of(context).size.width - 50 - 10) / 2,
-                      child: ProductItemWidget(
-                        model: VariantModel(
-                          id: "",
-                          model: ProductModel(
-                              name: "Tên sản phẩm",
-                              salePrice: 200000,
-                              price: 300000,
-                              photo:
-                                  "https://ananas.vn/wp-content/uploads/Pro_AV00165_1-500x500.jpeg"),
-                          color: ColorModel(),
-                          size: SizeModel(),
-                          price: 300000,
-                          salePrice: 200000,
-                          quantity: 0,
-                        ),
-                        showCartCount: true,
-                      ),
+        child: RefreshIndicator(
+          color: const Color(0xffF15E2C),
+          onRefresh: () =>
+              Config.providerContainer.read(getCartVariantList.future),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 20),
+                    child: const Text(
+                      "Địa chỉ giao hàng",
+                      style: TextStyle(fontSize: 15, color: Color(0xff222222)),
                     ),
                   ),
-                ),
-                const Divider(
-                  thickness: 1,
-                  color: Color(0xffF0F0F0),
-                  indent: 0,
-                  endIndent: 0,
-                  height: 40,
-                ),
-                Container(
-                  height: 60,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(20)),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                            color:
-                                Color.fromARGB((0.05 * 225).round(), 0, 0, 0),
-                            blurRadius: 10,
-                            offset: const Offset(0, 0))
-                      ]),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Tổng:",
-                        style: TextStyle(fontSize: 13, color: Colors.black),
+                  if (userIn4Provider.selected.id?.isNotEmpty ?? false)
+                    UserInfoWidget(
+                      model: userIn4Provider.selected,
+                      canEdit: true,
+                    )
+                  else
+                    InkWell(
+                      onTap: () {
+                        ref.read(userInfoProvider.notifier).getData();
+                        context
+                            .push(Func.convertName(const UserInfoIndex().key));
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 52, vertical: 12),
+                        decoration: const BoxDecoration(
+                          color: Color(0xffF15E2C),
+                          borderRadius: BorderRadius.horizontal(
+                              left: Radius.circular(30),
+                              right: Radius.circular(30)),
+                        ),
+                        child: const Text(
+                          "Thêm hoặt chọn địa chỉ giao hàng",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              height: 25 / 15),
+                        ),
                       ),
-                      Text(
-                        "101.030.000đ",
-                        style: TextStyle(fontSize: 13, color: Colors.black),
-                      )
-                    ],
+                    ),
+                  const Divider(
+                    thickness: 1,
+                    color: Color(0xffF0F0F0),
+                    indent: 0,
+                    endIndent: 0,
+                    height: 40,
                   ),
-                )
-              ],
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 20),
+                    child: const Text(
+                      "Danh sách sản phẩm",
+                      style: TextStyle(color: Color(0xff222222), fontSize: 15),
+                    ),
+                  ),
+                  Consumer(builder: (context, ref, child) {
+                    final provider = ref.watch(getCartVariantList);
+                    return provider.when(
+                      data: (data) {
+                        return Center(
+                          child: Wrap(
+                            alignment: WrapAlignment.spaceBetween,
+                            spacing: 10,
+                            runSpacing: 10,
+                            direction: Axis.horizontal,
+                            children: data
+                                .map(
+                                  (e) => SizedBox(
+                                    width: (MediaQuery.of(context).size.width -
+                                            50 -
+                                            10) /
+                                        2,
+                                    child: ProductItemWidget(
+                                      model: e,
+                                      showCartCount: true,
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        );
+                      },
+                      error: (error, stackTrace) => const Center(
+                        child: Text("Đã có lỗi xảy ra, vui lòng thử lại"),
+                      ),
+                      loading: () => const CircularProgressIndicator(
+                          color: Color(0xffF15E2C)),
+                    );
+                  }),
+                  const Divider(
+                    thickness: 1,
+                    color: Color(0xffF0F0F0),
+                    indent: 0,
+                    endIndent: 0,
+                    height: 40,
+                  ),
+                  Container(
+                    height: 60,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                              color:
+                                  Color.fromARGB((0.05 * 225).round(), 0, 0, 0),
+                              blurRadius: 10,
+                              offset: const Offset(0, 0))
+                        ]),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Tổng:",
+                          style: TextStyle(fontSize: 13, color: Colors.black),
+                        ),
+                        Consumer(builder: (context, ref, child) {
+                          final provider = ref.watch(getCartVariantList);
+                          return provider.when(
+                            data: (data) {
+                              double totalPrice = 0;
+                              for (var element in data) {
+                                totalPrice += element.salePrice == 0
+                                    ? element.price
+                                    : element.salePrice;
+                              }
+                              return Text(
+                                Func.formatPrice(totalPrice),
+                                style: const TextStyle(
+                                    color: Color(0xffF15E2C),
+                                    fontSize: 16,
+                                    height: 25 / 16),
+                              );
+                            },
+                            error: (error, stackTrace) {
+                              return Text(
+                                Func.formatPrice(0),
+                                style: const TextStyle(
+                                    color: Color(0xffF15E2C),
+                                    fontSize: 16,
+                                    height: 25 / 16),
+                              );
+                            },
+                            loading: () {
+                              return const CircularProgressIndicator(
+                                  color: Color(0xffF15E2C));
+                            },
+                          );
+                        }),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),

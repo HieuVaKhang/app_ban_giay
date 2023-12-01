@@ -72,6 +72,10 @@ class CartNotifier extends Notifier<CartState> {
           "0kcAmuKAqOUhBTyNbmgX",
           "1BtGNlorAAh6LnSst8xG",
           "1GL042QTM1JyEalRNNce",
+          "1HxCrzTMKk0vL32rI1j6",
+          "1cvs1BeSze4bbrWjqNXU",
+          "1dt66pnNRubcKacjObGU",
+          "294rmqRmu49GRSc7wPGc",
         ];
     box.clear();
     for (var element in listVariant) {

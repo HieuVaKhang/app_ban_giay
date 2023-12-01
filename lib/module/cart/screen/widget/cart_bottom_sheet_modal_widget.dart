@@ -1,12 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:app_ban_giay/libraries/config.dart';
 import 'package:app_ban_giay/module/cart/model/variant_model.dart';
 import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
 import 'package:app_ban_giay/module/cart/repository/cart_repository.dart';
-import 'package:app_ban_giay/module/product/model/product_model.dart';
 import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class CartBottomSheetModalWidget extends StatelessWidget {
   const CartBottomSheetModalWidget({Key? key, required this.model})
@@ -99,17 +99,20 @@ class CartBottomSheetModalWidget extends StatelessWidget {
                           .read(cartProvider.notifier)
                           .deleteCartItem(model.id)
                           .then((value) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => const Center(
+                            child: CircularProgressIndicator(
+                              color: Color(0xffF15E2C),
+                            ),
+                          ),
+                        );
                         Config.providerContainer
-                            .refresh(getCartVariantList)
-                            .when(
-                              data: (data) => context.pop(),
-                              error: (error, stackTrace) {},
-                              loading: () {
-                                showDialog(context: context, builder: (context) {
-                                    return CircularProgressIndicator(color: Color(0xffF15E2C),);
-                                },);
-                              },
-                            );
+                            .refresh(getCartVariantList.future)
+                            .whenComplete(() {
+                          context.pop();
+                          context.pop();
+                        });
                       });
                     },
                     child: Container(
