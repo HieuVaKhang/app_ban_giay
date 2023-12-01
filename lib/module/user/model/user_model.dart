@@ -4,11 +4,13 @@ import 'dart:convert';
 class UserModel {
   final String? id;
   final String? userName;
+  final String? fullname;
   final String? password;
   final String? email;
   UserModel({
     this.id,
     this.userName,
+    this.fullname,
     this.password,
     this.email,
   });
@@ -20,12 +22,14 @@ class UserModel {
   UserModel copyWith({
     String? id,
     String? userName,
+    String? fullname,
     String? password,
     String? email,
   }) {
     return UserModel(
       id: id ?? this.id,
       userName: userName ?? this.userName,
+      fullname: fullname ?? this.fullname,
       password: password ?? this.password,
       email: email ?? this.email,
     );
@@ -35,6 +39,7 @@ class UserModel {
     return <String, dynamic>{
       'id': id,
       'userName': userName,
+      'fullname': fullname,
       'password': password,
       'email': email,
     };
@@ -44,6 +49,7 @@ class UserModel {
     return UserModel(
       id: map['id'] != null ? map['id'] as String : null,
       userName: map['userName'] != null ? map['userName'] as String : null,
+      fullname: map['fullname'] != null ? map['fullname'] as String : null,
       password: map['password'] != null ? map['password'] as String : null,
       email: map['email'] != null ? map['email'] as String : null,
     );
@@ -55,7 +61,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, userName: $userName, password: $password, email: $email)';
+    return 'UserModel(id: $id, userName: $userName, fullname: $fullname, password: $password)';
   }
 
   @override
@@ -65,15 +71,15 @@ class UserModel {
     return 
       other.id == id &&
       other.userName == userName &&
-      other.password == password &&
-      other.email == email;
+      other.fullname == fullname &&
+      other.password == password;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
       userName.hashCode ^
-      password.hashCode ^
-      email.hashCode;
+      fullname.hashCode ^
+      password.hashCode;
   }
 }

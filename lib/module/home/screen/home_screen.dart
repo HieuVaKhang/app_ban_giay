@@ -1,21 +1,26 @@
 import 'package:app_ban_giay/libraries/config.dart';
-import 'package:app_ban_giay/libraries/function.dart';
-import 'package:app_ban_giay/module/cart/cart_index.dart';
-import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
-import 'package:app_ban_giay/module/home/home_index.dart';
-import 'package:app_ban_giay/module/home/repository/home_repo.dart';
-import 'package:app_ban_giay/module/product/model/product_model.dart';
-import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
-import 'package:app_ban_giay/module/news/model/news_model.dart';
-import 'package:app_ban_giay/module/news/screen/widget/news_item_widget.dart';
-import 'package:app_ban_giay/module/product_detail/product_detail_index.dart';
-import 'package:app_ban_giay/module/user/screen/user_screen.dart';
-import 'package:app_ban_giay/module/user/user_index.dart';
-
+import 'package:app_ban_giay/module/product_detail/provider/product_detail_provider.dart';
+import 'package:app_ban_giay/module/user/provider/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:go_router/go_router.dart';
+
+import 'package:app_ban_giay/libraries/function.dart';
+import 'package:app_ban_giay/module/cart/cart_index.dart';
+import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
+import 'package:app_ban_giay/module/home/home_index.dart';
+import 'package:app_ban_giay/module/home/provider/home_provider.dart';
+import 'package:app_ban_giay/module/home/repository/home_repo.dart';
+import 'package:app_ban_giay/module/home/screen/widget/product_list_item_widget.dart';
+import 'package:app_ban_giay/module/news/repository/news_repo.dart';
+import 'package:app_ban_giay/module/news/screen/widget/news_category_screen.dart';
+import 'package:app_ban_giay/module/news/screen/widget/news_item_widget.dart';
+import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
+import 'package:app_ban_giay/module/product_category/product_category_index.dart';
+import 'package:app_ban_giay/module/product_detail/product_detail_index.dart';
+import 'package:app_ban_giay/module/user/screen/user_screen.dart';
+import 'package:app_ban_giay/module/user/user_index.dart';
 
 final List<String> imageList = [
   "https://ananas.vn/wp-content/uploads/Web1920-1.jpeg",
@@ -78,6 +83,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 builder: (context, ref, child) {
                   return InkWell(
                     onTap: () {
+                      // Config.providerContainer
+                      //     .read(cartProvider.notifier)
+                      //     .factoryBox();
                       context.push(Func.convertName(const CartIndex().key));
                     },
                     child: Stack(children: [
@@ -154,6 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Consumer(builder: (context, ref, child) {
                   final categories = ref.watch(getCategoryProductProvider);
+                  final selected = ref.watch(selectedCategoryProvider);
                   return categories.when(
                     data: (data) {
                       return Padding(
@@ -164,25 +173,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Wrap(
                                 spacing: 13,
                                 children: data
-                                    .map(
-                                      (e) => Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20, vertical: 10),
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xffF15E2C),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(20)),
-                                        ),
-                                        child: Text(
-                                          e.name ?? "",
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            fontSize: 13,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    )
+                                    .map((e) => ProductListItemWidget(
+                                          isChecked: e.id == selected.id,
+                                          model: e,
+                                        ))
                                     .toList()),
                           ));
                     },
@@ -192,43 +186,58 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   );
                 }),
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 15,
-                  runSpacing: 15,
-                  direction: Axis.horizontal,
-                  children: List.generate(
-                    10,
-                    (index) => InkWell(
-                      onTap: () => context
-                          .push(Func.convertName(const ProductDetailIndex().key)),
-                      child: SizedBox(
-                        width:
-                            (MediaQuery.of(context).size.width - 40 - 10) / 2,
-                        child: ProductItemWidget(
-                          model: ProductModel(
-                              name: "Tên sản phẩm",
-                              salePrice: 200000,
-                              price: 300000,
-                              photo:
-                                  "https://ananas.vn/wp-content/uploads/Pro_AV00165_1-500x500.jpeg"),
-                        ),
-                      ),
+                Consumer(builder: (context, ref, child) {
+                  final homelist = ref.watch(homeListProductProvider);
+                  return homelist.when(
+                    data: (data) {
+                      return Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: 15,
+                          runSpacing: 15,
+                          direction: Axis.horizontal,
+                          children: data.map((e) {
+                            return InkWell(
+                              onTap: () {
+                                ref
+                                    .read(productDetailProvider.notifier)
+                                    .getDetail(e.model.id ?? "");
+                                context.push(Func.convertName(
+                                    const ProductDetailIndex().key));
+                              },
+                              child: SizedBox(
+                                width: (MediaQuery.of(context).size.width -
+                                        40 -
+                                        10) /
+                                    2,
+                                child: ProductItemWidget(model: e),
+                              ),
+                            );
+                          }).toList());
+                    },
+                    error: ((error, stackTrace) => const Text("Dữ liệu lỗi")),
+                    loading: () => const CircularProgressIndicator(
+                      color: Color(0xffF15E2C),
                     ),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 17, bottom: 20),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-                  decoration: const BoxDecoration(
-                    color: Color(0xffF15E2C),
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                  ),
-                  child: const Text(
-                    'Xem Thêm',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 13, color: Colors.white),
+                  );
+                }),
+                InkWell(
+                  onTap: () {
+                    context.push(
+                        Func.convertName(const ProductCategoryIndex().key));
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 17, bottom: 20),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 25),
+                    decoration: const BoxDecoration(
+                      color: Color(0xffF15E2C),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                    child: const Text(
+                      'Xem Thêm',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 13, color: Colors.white),
+                    ),
                   ),
                 ),
                 const Padding(
@@ -242,26 +251,35 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontWeight: FontWeight.w800),
                   ),
                 ),
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 15,
-                  runSpacing: 15,
-                  direction: Axis.horizontal,
-                  children: List.generate(
-                    4,
-                    (index) => SizedBox(
-                      width: (MediaQuery.of(context).size.width - 40 - 10) / 2,
-                      child: NewsItemWidget(
-                        model: NewsModel(
-                            name: "Sneaker Fest Vietnam và sự kết hợp",
-                            description:
-                                "Urbas Corluray Pack đem đến lựa chọn “làm mới mình” với sự kết hợp 5 gam màu mang sắc thu; phù hợp với những...",
-                            photo:
-                                "https://ananas.vn/wp-content/uploads/kvngang_mobile_web-300x160.jpg"),
-                      ),
+                Consumer(builder: (context, ref, child) {
+                  final newsList = ref.watch(getNewsProvider);
+                  return newsList.when(
+                    data: (data) {
+                      return Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: 15,
+                          runSpacing: 15,
+                          direction: Axis.horizontal,
+                          children: data
+                              .map(
+                                (e) => SizedBox(
+                                  width: (MediaQuery.of(context).size.width -
+                                          40 -
+                                          10) /
+                                      2,
+                                  child: NewsItemWidget(
+                                    model: e,
+                                  ),
+                                ),
+                              )
+                              .toList());
+                    },
+                    error: ((error, stackTrace) => const Text("Dữ liệu lỗi")),
+                    loading: () => const CircularProgressIndicator(
+                      color: Color(0xffF15E2C),
                     ),
-                  ),
-                ),
+                  );
+                }),
                 Container(
                   margin: const EdgeInsets.only(top: 17, bottom: 20),
                   padding:
@@ -286,6 +304,7 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: BottomNavigationBar(
           onTap: (value) {
+            print(value);
             switch (value) {
               case 0:
                 context.go(Func.convertName(const HomeIndex().key));
@@ -294,10 +313,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 context.push(Func.convertName(const CartIndex().key));
                 break;
               case 2:
-                context.go(Func.convertName(const HomeIndex().key));
+                context.go(Func.convertName(const NewsCategoryScreen().key));
                 break;
               case 3:
-                context.go(Func.convertName(const UserScreen().key));
+                context.go(Func.convertName(const UserIndex().key));
                 break;
               default:
                 context.push(Func.convertName(const HomeIndex().key));

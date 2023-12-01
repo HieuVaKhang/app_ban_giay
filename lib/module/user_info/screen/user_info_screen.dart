@@ -1,26 +1,16 @@
-import 'package:app_ban_giay/module/cart/model/user_info_model.dart';
+import 'package:app_ban_giay/module/payment/provider/payment_provider.dart';
 import 'package:app_ban_giay/module/payment/screen/widget/user_info_widget.dart';
+import 'package:app_ban_giay/module/user_info/screen/widget/user_info_bottom_sheet_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class UserInfoScreen extends StatelessWidget {
+class UserInfoScreen extends ConsumerWidget {
   const UserInfoScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final List<String> names = [
-      "Nhà",
-      "Cơ quan",
-      "Xưởng",
-      "Công ty",
-    ];
-    final List<String> addresses = [
-      "123 Quang Trung, Gò Vấp, Tp. HCM",
-      "CVPM Quang Trung, P. Tân Chánh Hiệp",
-      "CVPM Quang Trung, P. Tân Chánh Hiệp",
-      "CVPM Quang Trung, P. Tân Chánh Hiệp",
-    ];
-
+  Widget build(BuildContext context, ref) {
+    final userIn4Provider = ref.watch(getUserInfoProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -28,46 +18,72 @@ class UserInfoScreen extends StatelessWidget {
           style: TextStyle(color: Color(0xff222222), fontSize: 20),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              Wrap(
-                runSpacing: 20,
-                children: List.generate(
-                  4,
-                  (index) => UserInfoWidget(
-                    model: UserInfoModel(
-                        name: names[index], address: addresses[index]),
-                    isDefault: index == 0,
-                    isSelected: index == 0,
-                  ),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 20),
-                child: InkWell(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(30)),
-                      color: Color(0xffE7E7E7),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        "Thêm địa chị mới",
-                        style: TextStyle(
-                            color: Color(0xff222222),
-                            fontSize: 15,
-                            height: 25 / 15),
+      body: RefreshIndicator(
+        color: const Color(0xffF15E2C),
+        triggerMode: RefreshIndicatorTriggerMode.anywhere,
+        onRefresh: () async {},
+        child: SingleChildScrollView(
+          child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: userIn4Provider.when(
+                data: (data) {
+                  return Column(
+                    children: [
+                      Wrap(
+                        runSpacing: 20,
+                        children: data
+                            .map(
+                              (index) => UserInfoWidget(
+                                model: index,
+                                isDefault: index.id ==
+                                    ref.read(userInfoProvider).selected.id,
+                                isSelected: index.id ==
+                                    ref.read(userInfoProvider).selected.id,
+                              ),
+                            )
+                            .toList(),
                       ),
-                    ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 20),
+                        child: InkWell(
+                          onTap: () => showModalBottomSheet(
+                            isScrollControlled: true,
+                            context: context,
+                            builder: (context) {
+                              return const UserInfoBottomSheetWidget();
+                            },
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            decoration: const BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30)),
+                              color: Color(0xffE7E7E7),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                "Thêm địa chị mới",
+                                style: TextStyle(
+                                    color: Color(0xff222222),
+                                    fontSize: 15,
+                                    height: 25 / 15),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  );
+                },
+                error: (error, stackTrace) {
+                  return const Text("Đã có lỗi xảy ra, vui lòng thử lại");
+                },
+                loading: () => const Center(
+                  child: CircularProgressIndicator(
+                    color: Color(0xffF15E2C),
                   ),
                 ),
-              )
-            ],
-          ),
+              )),
         ),
       ),
       bottomNavigationBar: Container(
