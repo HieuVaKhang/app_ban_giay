@@ -92,20 +92,48 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           InkWell(
               onTap: () async {
+                // User? user = await _auth.signUpWithEmailAndPassword(
+                //     _emailController.text, _passwordController.text);
+                // String id = user?.uid ?? "";
+                // if (id.isNotEmpty) {
+                //   await _auth.addUser(id, "Chưa Đặt Tên", _passwordController.text);
+
+                //   print('Đăng ký thành công!');
+                //   ScaffoldMessenger.of(context).showSnackBar(
+                //     SnackBar(
+                //         content: Text(
+                //       'Đăng ký thành công!',
+                //       textAlign: TextAlign.center,
+                //       style: TextStyle(
+                //         fontSize: 12,
+                //       ),
+                //     )),
+                //   );
+                //   context.push(Func.convertName(const LoginScreen().key));
+                // } else {
+                //   print('Some error occured!');
+                //   ScaffoldMessenger.of(context).showSnackBar(
+                //     SnackBar(
+                //         content: Text(
+                //       'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.',
+                //       textAlign: TextAlign.center,
+                //       style: TextStyle(
+                //         fontSize: 12,
+                //       ),
+                //     )),
+                //   );
+                // }
+
                 User? user = await _auth.signUpWithEmailAndPassword(
                     _emailController.text, _passwordController.text);
                 String id = user?.uid ?? "";
-                if (id.isNotEmpty) {
-                  // final db = FirebaseFirestore.instance;
-                  // final userAccount = db.collection("user");
-                  // await userAccount.add({
-                  //   "id": db.doc(id),
-                  //   "userName": db.doc('Chưa Đặt Tên'),
-                  //   "email": db.doc(_emailController.text),
-                  //   "password": db.doc(_passwordController.text),
-                  // });
 
-                  // print(userAccount);
+                if (id.isNotEmpty) {
+                  await _auth.addUser(
+                      id, "Chưa Đặt Tên", _passwordController.text, _emailController.text);
+
+                  // Lấy container của provider scope hiện tại
+                  final container = ProviderContainer();
 
                   await _auth
                       .addUser(id, "Chưa Đặt Tên", "")
@@ -192,8 +220,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 12,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 final UserProvider = StateProvider<UserModel>((ref) {
-  return UserModel(id: '', userName: '', password: '');
+  return UserModel(id: '', userName: '', password: '', email: '');
 });

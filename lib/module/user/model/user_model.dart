@@ -6,24 +6,32 @@ class UserModel {
   final String? userName;
   final String? fullname;
   final String? password;
+  final String? email;
   UserModel({
     this.id,
     this.userName,
     this.fullname,
     this.password,
+    this.email,
   });
+
+  set state(UserModel state) {}
+
+  
 
   UserModel copyWith({
     String? id,
     String? userName,
     String? fullname,
     String? password,
+    String? email,
   }) {
     return UserModel(
       id: id ?? this.id,
       userName: userName ?? this.userName,
       fullname: fullname ?? this.fullname,
       password: password ?? this.password,
+      email: email ?? this.email,
     );
   }
 
@@ -33,6 +41,7 @@ class UserModel {
       'userName': userName,
       'fullname': fullname,
       'password': password,
+      'email': email,
     };
   }
 
@@ -42,13 +51,13 @@ class UserModel {
       userName: map['userName'] != null ? map['userName'] as String : null,
       fullname: map['fullname'] != null ? map['fullname'] as String : null,
       password: map['password'] != null ? map['password'] as String : null,
+      email: map['email'] != null ? map['email'] as String : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory UserModel.fromJson(String source) =>
-      UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory UserModel.fromJson(String source) => UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
