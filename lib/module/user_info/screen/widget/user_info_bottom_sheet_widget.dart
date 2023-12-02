@@ -1,5 +1,6 @@
 import 'package:app_ban_giay/libraries/config.dart';
 import 'package:app_ban_giay/module/cart/model/user_info_model.dart';
+import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
 import 'package:app_ban_giay/module/payment/provider/payment_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -8,17 +9,18 @@ class UserInfoBottomSheetWidget extends StatefulWidget {
   const UserInfoBottomSheetWidget({Key? key}) : super(key: key);
 
   @override
-  State<UserInfoBottomSheetWidget> createState() => _UserInfoBottomSheetWidgetState();
+  State<UserInfoBottomSheetWidget> createState() =>
+      _UserInfoBottomSheetWidgetState();
 }
 
 class _UserInfoBottomSheetWidgetState extends State<UserInfoBottomSheetWidget> {
-    final TextEditingController fullnaneCtrl = TextEditingController();
+  final TextEditingController fullnaneCtrl = TextEditingController();
 
-    final TextEditingController addressCtrl = TextEditingController();
+  final TextEditingController addressCtrl = TextEditingController();
 
-    final TextEditingController phoneCtrl = TextEditingController();
+  final TextEditingController phoneCtrl = TextEditingController();
 
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -204,18 +206,19 @@ class _UserInfoBottomSheetWidgetState extends State<UserInfoBottomSheetWidget> {
                             ),
                           );
                           await Config.providerContainer
-                              .read(userInfoProvider.notifier)
+                              .read(cartProvider.notifier)
                               .saveUserInfo(UserInfoModel(
                                   address: addressCtrl.text,
                                   fullname: fullnaneCtrl.text,
                                   phone: phoneCtrl.text))
                               .then((value) async {
                             await Config.providerContainer
-                                .read(userInfoProvider.notifier)
-                                .getData().then((value) {
-                                  context.pop();
-                                  context.pop();
-                                });
+                                .read(cartProvider.notifier)
+                                .getUserInfo()
+                                .then((value) {
+                              context.pop();
+                              context.pop();
+                            });
                           });
                         }
                       },

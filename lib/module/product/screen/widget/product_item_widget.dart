@@ -1,5 +1,7 @@
+import 'package:app_ban_giay/libraries/config.dart';
 import 'package:app_ban_giay/libraries/function.dart';
 import 'package:app_ban_giay/module/cart/model/variant_model.dart';
+import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
 import 'package:app_ban_giay/module/cart/screen/widget/cart_bottom_sheet_modal_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -38,7 +40,7 @@ class ProductItemWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.network(
-                model.model.photo ?? "",
+                model.model.photo ?? Config.noImage,
                 fit: BoxFit.cover,
                 height: 160,
                 width: double.infinity,
@@ -95,8 +97,13 @@ class ProductItemWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       if (showCartCountEdit)
-                        const InkWell(
-                          child: Center(
+                        InkWell(
+                          onTap: () {
+                            Config.providerContainer
+                                .read(cartProvider.notifier)
+                                .changeCartQuantity(model.id, false);
+                          },
+                          child: const Center(
                             child: Icon(
                               Icons.remove,
                               color: Colors.black,
@@ -104,13 +111,18 @@ class ProductItemWidget extends StatelessWidget {
                             ),
                           ),
                         ),
-                      const Text(
-                        "2",
+                      Text(
+                        model.quantity.toString(),
                         style: TextStyle(color: Colors.black, fontSize: 15),
                       ),
                       if (showCartCountEdit)
-                        const InkWell(
-                          child: Icon(
+                        InkWell(
+                          onTap: () {
+                            Config.providerContainer
+                                .read(cartProvider.notifier)
+                                .changeCartQuantity(model.id, true);
+                          },
+                          child: const Icon(
                             Icons.add_rounded,
                             color: Colors.black,
                             size: 10,

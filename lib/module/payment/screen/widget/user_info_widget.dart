@@ -1,5 +1,7 @@
+import 'package:app_ban_giay/libraries/config.dart';
 import 'package:app_ban_giay/libraries/function.dart';
 import 'package:app_ban_giay/module/cart/model/user_info_model.dart';
+import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
 import 'package:app_ban_giay/module/user_info/user_info_index.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -36,6 +38,11 @@ class UserInfoWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           InkWell(
+            onTap: () async {
+              await Config.providerContainer
+                  .read(cartProvider.notifier)
+                  .changeUserSelected(model);
+            },
             child: Container(
               width: 50,
               height: 50,
@@ -60,50 +67,59 @@ class UserInfoWidget extends StatelessWidget {
               ),
             ),
           ),
-          InkWell(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Wrap(
-                  runSpacing: 5,
-                  alignment: WrapAlignment.start,
-                  crossAxisAlignment: WrapCrossAlignment.center,
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.only(left: 10, right: 10),
+              child: InkWell(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Wrap(
+                      runSpacing: 5,
+                      alignment: WrapAlignment.start,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Text(
+                          model.fullname ?? "",
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              color: Colors.black, fontSize: 15),
+                        ),
+                        if (isDefault)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                color: Color(0xffE7E7E7)),
+                            child: const Text(
+                              "Mặc định",
+                              style:
+                                  TextStyle(fontSize: 8, color: Colors.black),
+                            ),
+                          )
+                      ],
+                    ),
                     Text(
-                      model.fullname ?? "",
+                      model.address ?? "",
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                          color: Colors.black, fontSize: 15),
+                          color: Color(0xff686868), fontSize: 10),
                     ),
-                    if (isDefault)
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        decoration: const BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10)),
-                            color: Color(0xffE7E7E7)),
-                        child: const Text(
-                          "Mặc định",
-                          style:
-                              TextStyle(fontSize: 8, color: Colors.black),
-                        ),
-                      )
                   ],
                 ),
-                Text(
-                  model.address ?? "",
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                      color: Color(0xff686868), fontSize: 10),
-                ),
-              ],
+              ),
             ),
           ),
           if (canEdit)
             InkWell(
-              onTap: () =>
-                  context.push(Func.convertName(const UserInfoIndex().key)),
+              onTap: () {
+                Config.providerContainer
+                    .read(cartProvider.notifier)
+                    .getUserInfo();
+                context.push(Func.convertName(const UserInfoIndex().key));
+              },
               child: const Icon(
                 Icons.edit,
                 size: 24,
@@ -111,20 +127,27 @@ class UserInfoWidget extends StatelessWidget {
               ),
             )
           else
-            Container(
-              width: 20,
-              height: 20,
-              padding: const EdgeInsets.all(4),
-              decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  color: Color(0xffF15E2C)),
+            InkWell(
+              onTap: () async {
+                await Config.providerContainer
+                    .read(cartProvider.notifier)
+                    .changeUserSelected(model);
+              },
               child: Container(
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(5)),
-                  border: Border.all(color: Colors.white, width: 1),
-                  color: isSelected ? const Color(0xffF15E2C) : Colors.white,
+                width: 20,
+                height: 20,
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    color: Color(0xffF15E2C)),
+                child: Container(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    border: Border.all(color: Colors.white, width: 1),
+                    color: isSelected ? const Color(0xffF15E2C) : Colors.white,
+                  ),
                 ),
               ),
             )

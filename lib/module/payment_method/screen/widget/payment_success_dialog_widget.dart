@@ -1,5 +1,8 @@
+import 'package:app_ban_giay/libraries/config.dart';
 import 'package:app_ban_giay/libraries/function.dart';
 import 'package:app_ban_giay/module/home/home_index.dart';
+import 'package:app_ban_giay/module/order/order_index.dart';
+import 'package:app_ban_giay/module/order/provider/order_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -47,6 +50,12 @@ class PaymentSuccessDialogWidget extends StatelessWidget {
               color: Color(0xffF15E2C),
             ),
             child: InkWell(
+              onTap: () {
+                Config.providerContainer
+                    .read(orderNotifierProvider.notifier)
+                    .getOrder();
+                context.push(Func.convertName(const OrderIndex().key));
+              },
               splashColor: const Color.fromARGB(255, 241, 74, 44),
               child: Container(
                 padding:

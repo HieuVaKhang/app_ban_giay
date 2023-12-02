@@ -1,11 +1,9 @@
-import 'package:app_ban_giay/libraries/config.dart';
-import 'package:app_ban_giay/module/product_detail/provider/product_detail_provider.dart';
-import 'package:app_ban_giay/module/user/provider/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:app_ban_giay/libraries/config.dart';
 import 'package:app_ban_giay/libraries/function.dart';
 import 'package:app_ban_giay/module/cart/cart_index.dart';
 import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
@@ -19,6 +17,7 @@ import 'package:app_ban_giay/module/news/screen/widget/news_item_widget.dart';
 import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
 import 'package:app_ban_giay/module/product_category/product_category_index.dart';
 import 'package:app_ban_giay/module/product_detail/product_detail_index.dart';
+import 'package:app_ban_giay/module/product_detail/provider/product_detail_provider.dart';
 import 'package:app_ban_giay/module/user/screen/user_screen.dart';
 import 'package:app_ban_giay/module/user/user_index.dart';
 
@@ -81,11 +80,13 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.all(8.0),
               child: Consumer(
                 builder: (context, ref, child) {
+                  final totalQTT =
+                      ref.watch(cartProvider.select((value) => value.totalQTT));
                   return InkWell(
                     onTap: () {
-                      // Config.providerContainer
-                      //     .read(cartProvider.notifier)
-                      //     .factoryBox();
+                      Config.providerContainer
+                          .read(cartProvider.notifier)
+                          .getCart();
                       context.push(Func.convertName(const CartIndex().key));
                     },
                     child: Stack(children: [
@@ -95,21 +96,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       Positioned(
                           top: 0,
                           right: 0,
-                          child: Container(
-                            width: 16,
-                            height: 16,
-                            decoration: const BoxDecoration(
-                                color: Color(0xffF15E2C),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8))),
-                            child: Center(
-                              child: Text(
-                                ref
-                                    .read(cartProvider.notifier)
-                                    .getCartNumber()
-                                    .toString(),
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 10),
+                          child: Opacity(
+                            opacity: totalQTT == 0 ? 0 : 1,
+                            child: Container(
+                              width: 16,
+                              height: 16,
+                              decoration: const BoxDecoration(
+                                  color: Color(0xffF15E2C),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8))),
+                              child: Center(
+                                child: Text(
+                                  totalQTT.toString(),
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 10),
+                                ),
                               ),
                             ),
                           )),
