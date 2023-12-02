@@ -91,7 +91,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       left: Radius.circular(30),
                       right: Radius.circular(30),
                     ),
-
                   ),
                   filled: true, // Cho phép đổ màu nền
                   fillColor: Color(0xffF4F4F4), // Màu sắc của nền
