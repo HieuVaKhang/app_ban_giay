@@ -1,3 +1,4 @@
+import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
 import 'package:app_ban_giay/module/payment/provider/payment_provider.dart';
 import 'package:app_ban_giay/module/payment/screen/widget/user_info_widget.dart';
 import 'package:app_ban_giay/module/user_info/screen/widget/user_info_bottom_sheet_widget.dart';
@@ -10,7 +11,7 @@ class UserInfoScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final userIn4Provider = ref.watch(getUserInfoProvider);
+    final cartP = ref.watch(cartProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -25,65 +26,61 @@ class UserInfoScreen extends ConsumerWidget {
         child: SingleChildScrollView(
           child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: userIn4Provider.when(
-                data: (data) {
-                  return Column(
-                    children: [
-                      Wrap(
-                        runSpacing: 20,
-                        children: data
-                            .map(
-                              (index) => UserInfoWidget(
-                                model: index,
-                                isDefault: index.id ==
-                                    ref.read(userInfoProvider).selected.id,
-                                isSelected: index.id ==
-                                    ref.read(userInfoProvider).selected.id,
+              child: cartP.isLoading > 0
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                      color: Color(0xffF15E2C),
+                    ))
+                  : (cartP.isLoading < 0
+                      ? const Text("Đã có lỗi xảy ra, vui lòng thử lại")
+                      : Column(
+                          children: [
+                            Wrap(
+                              runSpacing: 20,
+                              children: cartP.listUserInfo
+                                  .map(
+                                    (index) => UserInfoWidget(
+                                      model: index,
+                                      isDefault:
+                                          index.id == cartP.selectUserInfo.id,
+                                      isSelected:
+                                          index.id == cartP.selectUserInfo.id,
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 20),
+                              child: InkWell(
+                                onTap: () => showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  context: context,
+                                  builder: (context) {
+                                    return const UserInfoBottomSheetWidget();
+                                  },
+                                ),
+                                child: Container(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12),
+                                  decoration: const BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(30)),
+                                    color: Color(0xffE7E7E7),
+                                  ),
+                                  child: const Center(
+                                    child: Text(
+                                      "Thêm địa chị mới",
+                                      style: TextStyle(
+                                          color: Color(0xff222222),
+                                          fontSize: 15,
+                                          height: 25 / 15),
+                                    ),
+                                  ),
+                                ),
                               ),
                             )
-                            .toList(),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20),
-                        child: InkWell(
-                          onTap: () => showModalBottomSheet(
-                            isScrollControlled: true,
-                            context: context,
-                            builder: (context) {
-                              return const UserInfoBottomSheetWidget();
-                            },
-                          ),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30)),
-                              color: Color(0xffE7E7E7),
-                            ),
-                            child: const Center(
-                              child: Text(
-                                "Thêm địa chị mới",
-                                style: TextStyle(
-                                    color: Color(0xff222222),
-                                    fontSize: 15,
-                                    height: 25 / 15),
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  );
-                },
-                error: (error, stackTrace) {
-                  return const Text("Đã có lỗi xảy ra, vui lòng thử lại");
-                },
-                loading: () => const Center(
-                  child: CircularProgressIndicator(
-                    color: Color(0xffF15E2C),
-                  ),
-                ),
-              )),
+                          ],
+                        ))),
         ),
       ),
       bottomNavigationBar: Container(

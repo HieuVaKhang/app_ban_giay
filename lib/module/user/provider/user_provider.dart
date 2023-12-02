@@ -18,7 +18,7 @@ Future<void> getUser(String id) async {
     if (value.docs.isNotEmpty) {
       Config.providerContainer
           .read(userProvider.notifier)
-          .update((state) => UserModel(id: value.docs.first.id));
+          .update((state) => UserModel(id: value.docs.first.id, fullname: value.docs.first.data()['fullname']));
     }
   });
 }

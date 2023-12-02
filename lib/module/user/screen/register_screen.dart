@@ -129,14 +129,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 String id = user?.uid ?? "";
 
                 if (id.isNotEmpty) {
-                  await _auth.addUser(
-                      id, "Chưa Đặt Tên", _passwordController.text, _emailController.text);
+                  await _auth.addUser(id, "Chưa Đặt Tên",
+                      _passwordController.text, _emailController.text);
 
                   // Lấy container của provider scope hiện tại
                   final container = ProviderContainer();
 
                   await _auth
-                      .addUser(id, "Chưa Đặt Tên", "")
+                      .addUser(id, "Chưa Đặt Tên", "", _emailController.text)
                       .then((value) {
                     print('Đăng ký thành công!');
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -149,7 +149,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       )),
                     );
-                    
+
                     context.go(Func.convertName(const LoginScreen().key));
                   });
                 } else {

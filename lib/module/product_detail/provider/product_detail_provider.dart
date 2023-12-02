@@ -5,8 +5,8 @@ import 'package:app_ban_giay/module/product/model/product_model.dart';
 import 'package:app_ban_giay/module/product/model/size_model.dart';
 import 'package:app_ban_giay/module/product_detail/provider/product_detail_state.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class ProductDetailNotifier extends Notifier<ProductDetailState> {
   @override
@@ -21,6 +21,7 @@ class ProductDetailNotifier extends Notifier<ProductDetailState> {
   }
 
   final db = FirebaseFirestore.instance;
+  var box = Hive.box<int>(Config.orderBox);
 
   void changeSelectedColor(ColorModel color) {
     final img = state.variants
@@ -40,7 +41,9 @@ class ProductDetailNotifier extends Notifier<ProductDetailState> {
 
   void changeQuantity(bool isAdd) {
     int qtt = state.quantity;
+    if (qtt < 1) qtt = 1;
     isAdd ? qtt += 1 : qtt -= 1;
+    if (qtt < 1) qtt = 1;
     state = state.copyWith(quantity: qtt);
   }
 
@@ -82,16 +85,18 @@ class ProductDetailNotifier extends Notifier<ProductDetailState> {
             if (!sizes.contains(size)) {
               sizes.add(size);
             }
-            listVariant.add(VariantModel(
-                model: ProductModel(
-                  photo: element.data()['photo'],
-                ),
-                id: element.id,
-                color: color,
-                size: size,
-                price: 0,
-                salePrice: 0,
-                quantity: 0));
+            listVariant.add(
+              VariantModel(
+                  model: ProductModel(
+                    photo: element.data()['photo'],
+                  ),
+                  id: element.id,
+                  color: color,
+                  size: size,
+                  price: 0,
+                  salePrice: 0,
+                  quantity: box.get(element.id) ?? 0),
+            );
           }
         }
         return listVariant;
@@ -113,6 +118,7 @@ class ProductDetailNotifier extends Notifier<ProductDetailState> {
           variants: variants,
           colors: colors,
           sizes: sizes,
+          quantity: variants.first.quantity,
           loading: 0);
     }).onError((error, stackTrace) {
       print(error.toString());

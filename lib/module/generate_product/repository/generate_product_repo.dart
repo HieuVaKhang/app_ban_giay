@@ -26,7 +26,7 @@ final genProductProvider = FutureProvider<void>((ref) async {
         String nameCa = "$nameM ${category[z]}";
         String id = "";
         int price = 200 + Random().nextInt(1000 - 200 + 1);
-        int salePrice = price - (200 + Random().nextInt(400 - 200 + 1));
+        int salePrice = price - 100;
         final newProRef = db.collection("product");
         id = await newProRef.add({
           "name": nameCa,
