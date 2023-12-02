@@ -154,9 +154,9 @@ class ProductDetailScreen extends ConsumerWidget {
                     Padding(
                       padding: const EdgeInsets.only(
                           left: 20, right: 20, bottom: 15),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.end,
+                        alignment: WrapAlignment.spaceBetween,
                         children: [
                           Container(
                             width: 116,
