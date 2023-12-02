@@ -1,14 +1,22 @@
-import 'package:app_ban_giay/module/cart/cart_index.dart';
 import 'package:app_ban_giay/module/user/model/user_model.dart';
+import 'package:app_ban_giay/module/user/provider/user_provider.dart';
+import 'package:app_ban_giay/module/user/screen/login_screen.dart';
+import 'package:app_ban_giay/module/user/screen/register_screen.dart';
 import 'package:app_ban_giay/module/user/user_index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../libraries/function.dart';
 
-class UserScreen extends StatelessWidget {
+class UserScreen extends StatefulWidget {
   const UserScreen({Key? key}) : super(key: const Key('/account'));
 
+  @override
+  State<UserScreen> createState() => _UserScreenState();
+}
+
+class _UserScreenState extends State<UserScreen> {
+  final _fullNameController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,26 +44,26 @@ class UserScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: InkWell(
-                  onTap: () =>
-                      context.push(Func.convertName(const CartIndex().key)),
+                  // onTap: () =>
+                  //     context.push(Func.convertName(const CartIndex().key)),
                   child: Container(
-                    height: 20,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 1.5,
-                      ),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(30),
-                      ),
-                    ),
-                    child: const Icon(
-                      Icons.more_horiz,
-                      color: Colors.black,
-                      size: 17,
-                    ),
-                  )),
+                height: 20,
+                width: 40,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                    width: 1.5,
+                  ),
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(30),
+                  ),
+                ),
+                child: const Icon(
+                  Icons.more_horiz,
+                  color: Colors.black,
+                  size: 17,
+                ),
+              )),
             )
           ],
         ),
@@ -105,19 +113,19 @@ class UserScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                     Column(
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                         user.userName ?? "",
+                          user.fullname ?? "",
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 18,
                               fontWeight: FontWeight.w400),
                         ),
                         Text(
-                           user.email ?? "",
+                          user.email ?? "",
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 13,
@@ -132,131 +140,277 @@ class UserScreen extends StatelessWidget {
                     width: MediaQuery.of(context).size.width,
                     height: 1,
                     color: const Color(0xffF0F0F0)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const InkWell(
-                        child: Text(
-                      'Chỉnh sửa thông tin',
-                      style: TextStyle(fontSize: 13, color: Colors.black),
-                    )),
-                    Container(
-                      child: const Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.black,
-                        size: 15,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const InkWell(
-                        child: Text(
-                      'Địa chỉ',
-                      style: TextStyle(fontSize: 13, color: Colors.black),
-                    )),
-                    Container(
-                      child: const Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.black,
-                        size: 15,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                InkWell(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Consumer(builder: (context, ref, child) {
+                          final user = ref.watch(UserProvider);
+                          return Container(
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(30),
+                                  topRight: Radius.circular(30)),
+                              color: Colors.white,
+                            ),
+                            child: Form(
+                              child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    InkWell(
-                                      child: Container(
-                                        width: (MediaQuery.of(context)
-                                                .size
-                                                .width) /
-                                            2,
-                                        padding: const EdgeInsets.only(
-                                            top: 15, bottom: 15),
-                                        child: Text(
-                                          'Đăng xuất',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 15,
+                                    Container(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            height: 5,
                                           ),
-                                        ),
-                                      ),
-                                      onTap: () async {
-                                        // Thực hiện đăng xuất
-                                        context.push(Func.convertName(
-                                            const UserIndex().key));
-                                        Navigator.pop(context);
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              'Đăng xuất thành công!',
+                                          Text(
+                                            user.fullname ?? "",
+                                            style: TextStyle(
+                                              fontSize: 30,
                                             ),
                                           ),
-                                        );
-                                      },
-                                    ),
-                                    InkWell(
-                                      child: Container(
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xFFF15E2C),
-                                        ),
-                                        width: (MediaQuery.of(context)
-                                                .size
-                                                .width) /
-                                            2,
-                                        padding: EdgeInsets.only(
-                                            top: 15, bottom: 15),
-                                        child: Text(
-                                          'Huỷ',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15),
-                                        ),
+                                          Container(
+                                            margin:
+                                                const EdgeInsets.only(top: 20),
+                                            width: (MediaQuery.of(context)
+                                                    .size
+                                                    .width) -
+                                                50,
+                                            child: TextFormField(
+                                              controller: _fullNameController,
+                                              keyboardType: TextInputType.text,
+                                              decoration: const InputDecoration(
+                                                labelText: "Nhập tên mới",
+                                                prefixIcon: Icon(
+                                                    Icons.people_alt_outlined),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Color.fromARGB(
+                                                          0, 33, 149, 243)),
+                                                  borderRadius:
+                                                      BorderRadius.horizontal(
+                                                    left: Radius.circular(30),
+                                                    right: Radius.circular(30),
+                                                  ),
+                                                ),
+                                                filled:
+                                                    true, // Cho phép đổ màu nền
+                                                fillColor: Color(
+                                                    0xffF4F4F4), // Màu sắc của nền
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                    )
-                                  ],
-                                ),
-                              );
-                            },
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        InkWell(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                            ),
+                                            width: (MediaQuery.of(context)
+                                                    .size
+                                                    .width) /
+                                                2,
+                                            padding: const EdgeInsets.only(
+                                                top: 15, bottom: 15),
+                                            child: Text(
+                                              'Sửa',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                          ),
+                                          onTap: () async {
+                                            await updateUser(user.id.toString(),
+                                                user.fullname.toString());
+                                            Navigator.pop(context);
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  'Sửa Thành Công!',
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                        InkWell(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFFF15E2C),
+                                            ),
+                                            width: (MediaQuery.of(context)
+                                                    .size
+                                                    .width) /
+                                                2,
+                                            padding: EdgeInsets.only(
+                                                top: 15, bottom: 15),
+                                            child: Text(
+                                              'Huỷ',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15),
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                        )
+                                      ],
+                                    ),
+                                  ]),
+                            ),
                           );
-                        },
-                        child: const Text(
-                          'Đăng xuất',
+                        });
+                      },
+                    );
+                  },
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const InkWell(
+                            child: Text(
+                          'Chỉnh sửa thông tin',
                           style: TextStyle(fontSize: 13, color: Colors.black),
                         )),
-                    Container(
-                      child: const Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.black,
-                        size: 15,
-                      ),
+                        Container(
+                          child: const Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.black,
+                            size: 15,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                )
+                  ),
+                ),
+                // const SizedBox(
+                //   height: 30,
+                // ),
+                InkWell(
+                  onTap: () {},
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const InkWell(
+                            child: Text(
+                          'Địa chỉ',
+                          style: TextStyle(fontSize: 13, color: Colors.black),
+                        )),
+                        Container(
+                          child: const Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.black,
+                            size: 15,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                InkWell(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Container(
+                            decoration: BoxDecoration(),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                InkWell(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                    ),
+                                    width:
+                                        (MediaQuery.of(context).size.width) / 2,
+                                    padding: const EdgeInsets.only(
+                                        top: 15, bottom: 15),
+                                    child: Text(
+                                      'Đăng xuất',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ),
+                                  onTap: () async {
+                                    // Thực hiện đăng xuất
+                                    context.push(Func.convertName(
+                                        const UserIndex().key));
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Đăng xuất thành công!',
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                InkWell(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFFF15E2C),
+                                    ),
+                                    width:
+                                        (MediaQuery.of(context).size.width) / 2,
+                                    padding:
+                                        EdgeInsets.only(top: 15, bottom: 15),
+                                    child: Text(
+                                      'Huỷ',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 15),
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                )
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: Container(
+                      height: 50,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Đăng xuất',
+                            style: TextStyle(fontSize: 13, color: Colors.black),
+                          ),
+                          Container(
+                            child: const Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.black,
+                              size: 15,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ))
               ],
             );
           }),
@@ -265,5 +419,9 @@ class UserScreen extends StatelessWidget {
 }
 
 final UserProvider = StateProvider<UserModel>((ref) {
-  return UserModel(id: '', userName: '', password: '');
+  return UserModel(
+      id: 'nYMTbRoUTaWSS23PH7DGd3N8uz93',
+      email: '123@123.com',
+      fullname: 'tesst fullname');
+  // return UserModel(id: '', email: '', fullname: '');
 });

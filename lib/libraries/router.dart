@@ -28,7 +28,6 @@ final List<GoRoute> danhsachRoute = [
   Func.addGoRouter(const ProductDetailIndex()),
   Func.addGoRouter(const ProductCategoryIndex()),
   Func.addGoRouter(const NewsCategoryScreen()),
-
   Func.addGoRouter(const UserScreen()),
 ];
 String initRouter = Func.convertName(const UserScreen().key);
