@@ -54,7 +54,6 @@ class ProductDetailNotifier extends Notifier<ProductDetailState> {
       }
       var colors = <ColorModel>[];
       var sizes = <SizeModel>[];
-
       final variants = await (db
               .collection('variant')
               .where('idProduct', isEqualTo: db.doc('product/$idProduct')))

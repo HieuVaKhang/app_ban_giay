@@ -1,10 +1,14 @@
 
 
+import 'package:app_ban_giay/libraries/function.dart';
+import 'package:app_ban_giay/module/product_detail/product_detail_index.dart';
+import 'package:app_ban_giay/module/product_detail/provider/product_detail_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:app_ban_giay/module/home/repository/home_repo.dart';
 import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
+import 'package:go_router/go_router.dart';
 
 class ProductCategoryScreen extends StatelessWidget {
   const ProductCategoryScreen({super.key});
@@ -34,12 +38,21 @@ class ProductCategoryScreen extends StatelessWidget {
                           direction: Axis.horizontal,
                           children: data
                               .map(
-                                (e) => SizedBox(
-                                  width: (MediaQuery.of(context).size.width -
-                                          40 -
-                                          10) /
-                                      2,
-                                  child: ProductItemWidget(model: e),
+                                (e) => InkWell(
+                                  onTap: () {
+                                    ref
+                                        .read(productDetailProvider.notifier)
+                                        .getDetail(e.model.id ?? "");
+                                    context.push(Func.convertName(
+                                        const ProductDetailIndex().key));
+                                  },
+                                  child: SizedBox(
+                                    width: (MediaQuery.of(context).size.width -
+                                            40 -
+                                            10) /
+                                        2,
+                                    child: ProductItemWidget(model: e),
+                                  ),
                                 ),
                               )
                               .toList());
