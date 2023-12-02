@@ -1,7 +1,13 @@
 import 'package:app_ban_giay/libraries/function.dart';
+import 'package:app_ban_giay/module/cart/model/variant_model.dart';
+import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
+import 'package:app_ban_giay/module/product/model/color_model.dart';
+import 'package:app_ban_giay/module/product/model/product_model.dart';
+import 'package:app_ban_giay/module/product/model/size_model.dart';
 import 'package:app_ban_giay/module/product_detail/provider/product_detail_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class ProductDetailScreen extends ConsumerWidget {
   const ProductDetailScreen({super.key});
@@ -47,14 +53,27 @@ class ProductDetailScreen extends ConsumerWidget {
                             style: const TextStyle(
                                 color: Color(0xff222222), fontSize: 15),
                           ),
-                          DropdownButton(items: const [
-                            DropdownMenuItem(
-                                child: Text(
-                              'Size',
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 15),
-                            ))
-                          ], onChanged: null)
+                          DropdownButton(
+                            value: SizeModel(
+                                id: productProvider.product.sizeId,
+                                name: productProvider.product.sizeName),
+                            items: productProvider.sizes
+                                .map((e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Text(
+                                      e.name ?? "",
+                                      style: const TextStyle(
+                                          color: Colors.black, fontSize: 15),
+                                    )))
+                                .toList(),
+                            onChanged: (value) {
+                              print(value.toString());
+                              ref
+                                  .read(productDetailProvider.notifier)
+                                  .changeSelectedSize(
+                                      value ?? productProvider.sizes.first);
+                            },
+                          )
                         ],
                       ),
                     ),
@@ -157,16 +176,22 @@ class ProductDetailScreen extends ConsumerWidget {
                                   onTap: () => ref
                                       .read(productDetailProvider.notifier)
                                       .changeQuantity(false),
-                                  child: const Center(
-                                    child: Icon(
-                                      Icons.remove,
-                                      color: Colors.black,
-                                      size: 10,
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.remove,
+                                        color: Colors.black,
+                                        size: 10,
+                                      ),
                                     ),
                                   ),
                                 ),
                                 Text(
-                                  productProvider.quantity.toString(),
+                                  (productProvider.quantity == 0
+                                          ? 1
+                                          : productProvider.quantity)
+                                      .toString(),
                                   style: const TextStyle(
                                       color: Colors.black, fontSize: 15),
                                 ),
@@ -174,37 +199,90 @@ class ProductDetailScreen extends ConsumerWidget {
                                   onTap: () => ref
                                       .read(productDetailProvider.notifier)
                                       .changeQuantity(true),
-                                  child: const Icon(
-                                    Icons.add_rounded,
-                                    color: Colors.black,
-                                    size: 10,
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.add_rounded,
+                                        color: Colors.black,
+                                        size: 10,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 25, vertical: 12),
-                            decoration: const BoxDecoration(
-                                color: Color(0xffF15E2C),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30))),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/images/cart.png',
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 10),
-                                  child: Text(
-                                    'Thêm vào giỏ hàng',
-                                    style: TextStyle(
-                                        fontSize: 15, color: Colors.white),
+                          InkWell(
+                            onTap: () async {
+                              showDialog(
+                                context: context,
+                                builder: (context) => const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Color(0xffF15E2C),
                                   ),
                                 ),
-                              ],
+                              );
+                              final variant =
+                                  productProvider.variants.firstWhere(
+                                (element) =>
+                                    element.color.id ==
+                                        productProvider.product.colorId &&
+                                    element.size.id ==
+                                        productProvider.product.sizeId,
+                                orElse: () => VariantModel(
+                                    id: '',
+                                    model: ProductModel(),
+                                    color: ColorModel(),
+                                    size: SizeModel(),
+                                    price: 0,
+                                    salePrice: 0,
+                                    quantity: 0),
+                              );
+                              ref
+                                  .read(cartProvider.notifier)
+                                  .addToCart(variant)
+                                  .then((value) {
+                                context.pop();
+                                if (value) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                    content:
+                                        Text("Thêm vào giỏ hàng thành công"),
+                                    backgroundColor: Colors.green,
+                                  ));
+                                } else {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                    content: Text("Thêm vào giỏ hàng Thất bại"),
+                                    backgroundColor: Colors.orange,
+                                  ));
+                                }
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 25, vertical: 12),
+                              decoration: const BoxDecoration(
+                                  color: Color(0xffF15E2C),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(30))),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/images/cart.png',
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 10),
+                                    child: Text(
+                                      '${productProvider.variants.firstWhere((element) => element.color.id == productProvider.product.colorId && element.size.id == productProvider.product.sizeId, orElse: () => VariantModel(id: '', model: ProductModel(), color: ColorModel(), size: SizeModel(), price: 0, salePrice: 0, quantity: 0)).quantity > 0 ? "Cập nhật" : "Thêm vào"} giỏ hàng',
+                                      style: const TextStyle(
+                                          fontSize: 15, color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           )
                         ],
@@ -243,14 +321,20 @@ class ProductDetailScreen extends ConsumerWidget {
                                 padding: const EdgeInsets.only(right: 10),
                                 child: Text(
                                   Func.formatPrice(
-                                      productProvider.product.price ?? 0),
+                                      (productProvider.product.salePrice ?? 0) *
+                                          (productProvider.quantity == 0
+                                              ? 1
+                                              : productProvider.quantity)),
                                   style: const TextStyle(
                                       color: Color(0xffF15E2C), fontSize: 18),
                                 ),
                               ),
                               Text(
                                 Func.formatPrice(
-                                    productProvider.product.salePrice ?? 0),
+                                    (productProvider.product.price ?? 0) *
+                                        (productProvider.quantity == 0
+                                            ? 1
+                                            : productProvider.quantity)),
                                 style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 14,

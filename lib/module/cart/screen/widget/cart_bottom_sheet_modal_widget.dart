@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:app_ban_giay/libraries/config.dart';
 import 'package:app_ban_giay/module/cart/model/variant_model.dart';
 import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
-import 'package:app_ban_giay/module/cart/repository/cart_repository.dart';
 import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
 
 class CartBottomSheetModalWidget extends StatelessWidget {
@@ -94,24 +93,35 @@ class CartBottomSheetModalWidget extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () async {
+                      showDialog(
+                        context: context,
+                        builder: (context) => const Center(
+                          child: CircularProgressIndicator(
+                            color: Color(0xffF15E2C),
+                          ),
+                        ),
+                      );
                       await Config.providerContainer
                           .read(cartProvider.notifier)
                           .deleteCartItem(model.id)
                           .then((value) {
-                        showDialog(
-                          context: context,
-                          builder: (context) => const Center(
-                            child: CircularProgressIndicator(
-                              color: Color(0xffF15E2C),
-                            ),
-                          ),
-                        );
-                        Config.providerContainer
-                            .refresh(getCartVariantList.future)
-                            .whenComplete(() {
-                          context.pop();
-                          context.pop();
-                        });
+                        context.pop();
+                        context.pop();
+                        if (value) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content:
+                                Text("Xóa sản phẩm khỏi giỏ hàng thành công"),
+                            backgroundColor: Colors.green,
+                          ));
+                        } else {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content:
+                                Text("Xóa sản phẩm khỏi giỏ hàng thất bại"),
+                            backgroundColor: Colors.orange,
+                          ));
+                        }
                       });
                     },
                     child: Container(

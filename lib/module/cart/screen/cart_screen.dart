@@ -1,17 +1,18 @@
+import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:app_ban_giay/libraries/function.dart';
-import 'package:app_ban_giay/module/cart/repository/cart_repository.dart';
 import 'package:app_ban_giay/module/payment/payment_index.dart';
 import 'package:app_ban_giay/module/product/screen/widget/product_item_widget.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends ConsumerWidget {
   const CartScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    final cart = ref.watch(cartProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -19,67 +20,55 @@ class CartScreen extends StatelessWidget {
           style: TextStyle(color: Color(0xff222222), fontSize: 20),
         ),
       ),
-      body: Consumer(
-        builder: (context, ref, child) {
-          final provider = ref.watch(getCartVariantList);
-          return provider.when(
-            data: (data) {
-              return SizedBox(
+      body: cart.isLoading > 0
+          ? const Center(
+              child: CircularProgressIndicator(color: Color(0xffF15E2C)),
+            )
+          : (cart.isLoading < 0
+              ? const Center(
+                  child: Text("Đã có lỗi xảy ra, vui lòng thử lại sau"),
+                )
+              : SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: RefreshIndicator(
                     color: const Color(0xffF15E2C),
-                    onRefresh: () => ref.refresh(getCartVariantList.future),
+                    onRefresh: () => ref.read(cartProvider.notifier).getCart(),
                     child: SingleChildScrollView(
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 24, horizontal: 15),
-                          child: Wrap(
-                            alignment: WrapAlignment.spaceBetween,
-                            spacing: 10,
-                            runSpacing: 10,
-                            direction: Axis.horizontal,
-                            children: data.isNotEmpty
-                                ? data
-                                    .map(
-                                      (e) => SizedBox(
-                                        width:
-                                            (MediaQuery.of(context).size.width -
-                                                    50 -
-                                                    10) /
-                                                2,
-                                        child: ProductItemWidget(
-                                          model: e,
-                                          showCartCount: true,
-                                          showCartCountEdit: true,
-                                          showDelete: true,
-                                        ),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 24, horizontal: 15),
+                        child: Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          spacing: 10,
+                          runSpacing: 10,
+                          direction: Axis.horizontal,
+                          children: cart.listProduct.isNotEmpty
+                              ? cart.listProduct
+                                  .map(
+                                    (e) => SizedBox(
+                                      width:
+                                          (MediaQuery.of(context).size.width -
+                                                  50 -
+                                                  10) /
+                                              2,
+                                      child: ProductItemWidget(
+                                        model: e,
+                                        showCartCount: true,
+                                        showCartCountEdit: true,
+                                        showDelete: true,
                                       ),
-                                    )
-                                    .toList()
-                                : [
-                                    const Text(
-                                        "Chưa có sản phẩm nào trong giỏ hàng"),
-                                  ],
-                          ),
+                                    ),
+                                  )
+                                  .toList()
+                              : [
+                                  const Text(
+                                      "Chưa có sản phẩm nào trong giỏ hàng"),
+                                ],
                         ),
                       ),
                     ),
-                  ));
-            },
-            error: (error, stackTrace) {
-              return const Center(
-                child: Text("Đã có lỗi xảy ra, vui lòng thử lại sau"),
-              );
-            },
-            loading: () {
-              return const Center(
-                child: CircularProgressIndicator(color: Color(0xffF15E2C)),
-              );
-            },
-          );
-        },
-      ),
+                  ))),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -97,38 +86,11 @@ class CartScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Consumer(builder: (context, ref, child) {
-              final provider = ref.watch(getCartVariantList);
-              return provider.when(
-                data: (data) {
-                  double totalPrice = 0;
-                  for (var element in data) {
-                    totalPrice +=
-                        element.salePrice == 0 ? element.price : element.salePrice;
-                  }
-                  return Text(
-                    Func.formatPrice(totalPrice),
-                    style: const TextStyle(
-                        color: Color(0xffF15E2C),
-                        fontSize: 16,
-                        height: 25 / 16),
-                  );
-                },
-                error: (error, stackTrace) {
-                  return Text(
-                    Func.formatPrice(0),
-                    style: const TextStyle(
-                        color: Color(0xffF15E2C),
-                        fontSize: 16,
-                        height: 25 / 16),
-                  );
-                },
-                loading: () {
-                  return const CircularProgressIndicator(
-                      color: Color(0xffF15E2C));
-                },
-              );
-            }),
+            Text(
+              Func.formatPrice(cart.total),
+              style: const TextStyle(
+                  color: Color(0xffF15E2C), fontSize: 16, height: 25 / 16),
+            ),
             InkWell(
               onTap: () =>
                   context.push(Func.convertName(const PaymentIndex().key)),
@@ -153,3 +115,14 @@ class CartScreen extends StatelessWidget {
     );
   }
 }
+
+ // return provider.when(
+          //   data: (data) {
+          //   },
+          //   error: (error, stackTrace) {
+          //   },
+          //   loading: () {
+
+          //   },
+          // );
+        

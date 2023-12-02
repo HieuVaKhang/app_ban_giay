@@ -18,7 +18,25 @@ Future<void> getUser(String id) async {
     if (value.docs.isNotEmpty) {
       Config.providerContainer
           .read(userProvider.notifier)
-          .update((state) => UserModel(id: value.docs.first.id));
+          .update((state) => UserModel(id: value.docs.first.id, fullname: value.docs.first.data()['fullname']));
     }
   });
+}
+
+Future<void> updateUser(String id, String fullname) async {
+  final db = FirebaseFirestore.instance;
+  final post = await db
+      .collection("users")
+      .where('id', isEqualTo: id)
+      .limit(1)
+      .get()
+      .then((value) {
+    return value.docs[0].reference;
+  });
+  var batch = db.batch();
+  batch.update(post, {'fullname': fullname});
+  batch.commit();
+  Config.providerContainer
+          .read(userProvider.notifier)
+          .update((state) => UserModel(fullname: fullname));
 }

@@ -3,13 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class FirebaseAuthService {
-  final  _auth = FirebaseAuth.instance;
+  final _auth = FirebaseAuth.instance;
 
   Future<User?> signUpWithEmailAndPassword(
-      String email, String password) async {
+      String email, String password, BuildContext context) async {
     try {
-      final credential =
-          await _auth.createUserWithEmailAndPassword(
+      final credential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -17,8 +16,28 @@ class FirebaseAuthService {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text(
+            'Mật khẩu quá yếu.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12,
+            ),
+          )),
+        );
       } else if (e.code == 'email-already-in-use') {
         print('The account already exists for that email.');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text(
+            'Email đã tồn tại.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12,
+            ),
+          )),
+        );
       }
       return null;
     } catch (e) {
@@ -70,21 +89,17 @@ class FirebaseAuthService {
     return null;
   }
 
-
   // Add User Firestore Database
   final CollectionReference users =
       FirebaseFirestore.instance.collection('users');
-  Future<void> addUser(String id, String name, String pass ,String email) {
+  Future<void> addUser(String id, String email, String name) {
     return users
         .add({
           'id': id,
-          'userName': name,
-          'password': pass,
           'email': email,
+          'fullname': name,
         })
         .then((value) => print('User added'))
         .catchError((error) => print('Failed to add user: $error'));
   }
 }
-
-

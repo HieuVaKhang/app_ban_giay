@@ -8,58 +8,70 @@ import 'package:app_ban_giay/module/cart/model/variant_model.dart';
 import 'package:app_ban_giay/module/payment_method/model/payment_method_model.dart';
 
 class CartState {
-  final List<VariantModel>? listProduct;
-  final UserInfoModel? selectUserInfo;
-  final PaymentMethodModel? selectePaymentMethod;
+  final List<VariantModel> listProduct;
+  final UserInfoModel selectUserInfo;
+  final List<UserInfoModel> listUserInfo;
+  final List<PaymentMethodModel> listPaymentMethod;
+  final PaymentMethodModel selectePaymentMethod;
+  final int totalQTT;
   final double total;
-  final bool isLoading;
-  final bool error;
+  final int isLoading;
   CartState({
-    this.listProduct,
-    this.selectUserInfo,
-    this.selectePaymentMethod,
+    required this.listProduct,
+    required this.selectUserInfo,
+    required this.listUserInfo,
+    required this.listPaymentMethod,
+    required this.selectePaymentMethod,
+    required this.totalQTT,
     required this.total,
     required this.isLoading,
-    required this.error,
   });
 
   CartState copyWith({
     List<VariantModel>? listProduct,
     UserInfoModel? selectUserInfo,
+    List<UserInfoModel>? listUserInfo,
+    List<PaymentMethodModel>? listPaymentMethod,
     PaymentMethodModel? selectePaymentMethod,
+    int? totalQTT,
     double? total,
-    bool? isLoading,
-    bool? error,
+    int? isLoading,
   }) {
     return CartState(
       listProduct: listProduct ?? this.listProduct,
       selectUserInfo: selectUserInfo ?? this.selectUserInfo,
+      listUserInfo: listUserInfo ?? this.listUserInfo,
+      listPaymentMethod: listPaymentMethod ?? this.listPaymentMethod,
       selectePaymentMethod: selectePaymentMethod ?? this.selectePaymentMethod,
+      totalQTT: totalQTT ?? this.totalQTT,
       total: total ?? this.total,
       isLoading: isLoading ?? this.isLoading,
-      error: error ?? this.error,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'listProduct': listProduct?.map((x) => x.toMap()).toList() ?? [],
-      'selectUserInfo': selectUserInfo?.toMap(),
-      'selectePaymentMethod': selectePaymentMethod?.toMap(),
+      'listProduct': listProduct.map((x) => x.toMap()).toList(),
+      'selectUserInfo': selectUserInfo.toMap(),
+      'listUserInfo': listUserInfo.map((x) => x.toMap()).toList(),
+      'listPaymentMethod': listPaymentMethod.map((x) => x.toMap()).toList(),
+      'selectePaymentMethod': selectePaymentMethod.toMap(),
+      'totalQTT': totalQTT,
       'total': total,
       'isLoading': isLoading,
-      'error': error,
     };
   }
 
   factory CartState.fromMap(Map<String, dynamic> map) {
     return CartState(
-      listProduct: map['listProduct'] != null ? List<VariantModel>.from((map['listProduct'] as List<int>).map<VariantModel?>((x) => VariantModel.fromMap(x as Map<String,dynamic>),),) : null,
-      selectUserInfo: map['selectUserInfo'] != null ? UserInfoModel.fromMap(map['selectUserInfo'] as Map<String,dynamic>) : null,
-      selectePaymentMethod: map['selectePaymentMethod'] != null ? PaymentMethodModel.fromMap(map['selectePaymentMethod'] as Map<String,dynamic>) : null,
+      listProduct: List<VariantModel>.from((map['listProduct'] as List<int>).map<VariantModel>((x) => VariantModel.fromMap(x as Map<String,dynamic>),),),
+      selectUserInfo: UserInfoModel.fromMap(map['selectUserInfo'] as Map<String,dynamic>),
+      listUserInfo: List<UserInfoModel>.from((map['listUserInfo'] as List<int>).map<UserInfoModel>((x) => UserInfoModel.fromMap(x as Map<String,dynamic>),),),
+      listPaymentMethod: List<PaymentMethodModel>.from((map['listPaymentMethod'] as List<int>).map<PaymentMethodModel>((x) => PaymentMethodModel.fromMap(x as Map<String,dynamic>),),),
+      selectePaymentMethod: PaymentMethodModel.fromMap(map['selectePaymentMethod'] as Map<String,dynamic>),
+      totalQTT: map['totalQTT'] as int,
       total: map['total'] as double,
-      isLoading: map['isLoading'] as bool,
-      error: map['error'] as bool,
+      isLoading: map['isLoading'] as int,
     );
   }
 
@@ -69,7 +81,7 @@ class CartState {
 
   @override
   String toString() {
-    return 'CartState(listProduct: $listProduct, selectUserInfo: $selectUserInfo, selectePaymentMethod: $selectePaymentMethod, total: $total, isLoading: $isLoading, error: $error)';
+    return 'CartState(listProduct: $listProduct, selectUserInfo: $selectUserInfo, listUserInfo: $listUserInfo, listPaymentMethod: $listPaymentMethod, selectePaymentMethod: $selectePaymentMethod, totalQTT: $totalQTT, total: $total, isLoading: $isLoading)';
   }
 
   @override
@@ -79,19 +91,23 @@ class CartState {
     return 
       listEquals(other.listProduct, listProduct) &&
       other.selectUserInfo == selectUserInfo &&
+      listEquals(other.listUserInfo, listUserInfo) &&
+      listEquals(other.listPaymentMethod, listPaymentMethod) &&
       other.selectePaymentMethod == selectePaymentMethod &&
+      other.totalQTT == totalQTT &&
       other.total == total &&
-      other.isLoading == isLoading &&
-      other.error == error;
+      other.isLoading == isLoading;
   }
 
   @override
   int get hashCode {
     return listProduct.hashCode ^
       selectUserInfo.hashCode ^
+      listUserInfo.hashCode ^
+      listPaymentMethod.hashCode ^
       selectePaymentMethod.hashCode ^
+      totalQTT.hashCode ^
       total.hashCode ^
-      isLoading.hashCode ^
-      error.hashCode;
+      isLoading.hashCode;
   }
 }

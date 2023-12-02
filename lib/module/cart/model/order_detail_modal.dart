@@ -1,28 +1,31 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:app_ban_giay/module/cart/model/order_modal.dart';
+import 'package:app_ban_giay/module/cart/model/variant_model.dart';
+
 class OrderDetailModal {
   final String? id;
-  final String? idVariant;
-  final String? idOrder;
+  final VariantModel? idVariant;
+  final OrderModal? idOrder;
   final double? price;
-  final double? priceScale;
+  final double? salePrice;
   final int? quantity;
   OrderDetailModal({
     this.id,
     this.idVariant,
     this.idOrder,
     this.price,
-    this.priceScale,
+    this.salePrice,
     this.quantity,
   });
 
   OrderDetailModal copyWith({
     String? id,
-    String? idVariant,
-    String? idOrder,
+    VariantModel? idVariant,
+    OrderModal? idOrder,
     double? price,
-    double? priceScale,
+    double? salePrice,
     int? quantity,
   }) {
     return OrderDetailModal(
@@ -30,7 +33,7 @@ class OrderDetailModal {
       idVariant: idVariant ?? this.idVariant,
       idOrder: idOrder ?? this.idOrder,
       price: price ?? this.price,
-      priceScale: priceScale ?? this.priceScale,
+      salePrice: salePrice ?? this.salePrice,
       quantity: quantity ?? this.quantity,
     );
   }
@@ -38,10 +41,10 @@ class OrderDetailModal {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'idVariant': idVariant,
-      'idOrder': idOrder,
+      'idVariant': idVariant?.toMap(),
+      'idOrder': idOrder?.toMap(),
       'price': price,
-      'priceScale': priceScale,
+      'salePrice': salePrice,
       'quantity': quantity,
     };
   }
@@ -49,10 +52,10 @@ class OrderDetailModal {
   factory OrderDetailModal.fromMap(Map<String, dynamic> map) {
     return OrderDetailModal(
       id: map['id'] != null ? map['id'] as String : null,
-      idVariant: map['idVariant'] != null ? map['idVariant'] as String : null,
-      idOrder: map['idOrder'] != null ? map['idOrder'] as String : null,
+      idVariant: map['idVariant'] != null ? VariantModel.fromMap(map['idVariant'] as Map<String,dynamic>) : null,
+      idOrder: map['idOrder'] != null ? OrderModal.fromMap(map['idOrder'] as Map<String,dynamic>) : null,
       price: map['price'] != null ? map['price'] as double : null,
-      priceScale: map['priceScale'] != null ? map['priceScale'] as double : null,
+      salePrice: map['salePrice'] != null ? map['salePrice'] as double : null,
       quantity: map['quantity'] != null ? map['quantity'] as int : null,
     );
   }
@@ -63,7 +66,7 @@ class OrderDetailModal {
 
   @override
   String toString() {
-    return 'OrderDetailModal(id: $id, idVariant: $idVariant, idOrder: $idOrder, price: $price, priceScale: $priceScale, quantity: $quantity)';
+    return 'OrderDetailModal(id: $id, idVariant: $idVariant, idOrder: $idOrder, price: $price, salePrice: $salePrice, quantity: $quantity)';
   }
 
   @override
@@ -75,7 +78,7 @@ class OrderDetailModal {
       other.idVariant == idVariant &&
       other.idOrder == idOrder &&
       other.price == price &&
-      other.priceScale == priceScale &&
+      other.salePrice == salePrice &&
       other.quantity == quantity;
   }
 
@@ -85,7 +88,7 @@ class OrderDetailModal {
       idVariant.hashCode ^
       idOrder.hashCode ^
       price.hashCode ^
-      priceScale.hashCode ^
+      salePrice.hashCode ^
       quantity.hashCode;
   }
 }

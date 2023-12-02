@@ -8,7 +8,7 @@ import 'package:app_ban_giay/module/cart/model/user_info_model.dart';
 class UserInfoState {
   final List<UserInfoModel> listModal;
   final UserInfoModel selected;
-  final bool loading;
+  final int loading;
   UserInfoState({
     required this.listModal,
     required this.selected,
@@ -18,7 +18,7 @@ class UserInfoState {
   UserInfoState copyWith({
     List<UserInfoModel>? listModal,
     UserInfoModel? selected,
-    bool? loading,
+    int? loading,
   }) {
     return UserInfoState(
       listModal: listModal ?? this.listModal,
@@ -39,7 +39,7 @@ class UserInfoState {
     return UserInfoState(
       listModal: List<UserInfoModel>.from((map['listModal'] as List<int>).map<UserInfoModel>((x) => UserInfoModel.fromMap(x as Map<String,dynamic>),),),
       selected: UserInfoModel.fromMap(map['selected'] as Map<String,dynamic>),
-      loading: map['loading'] as bool,
+      loading: map['loading'] as int,
     );
   }
 
