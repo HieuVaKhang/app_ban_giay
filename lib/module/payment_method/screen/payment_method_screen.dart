@@ -1,58 +1,62 @@
 import 'package:app_ban_giay/libraries/function.dart';
+import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
 import 'package:app_ban_giay/module/home/home_index.dart';
 import 'package:app_ban_giay/module/payment_method/screen/widget/payment_method_item_widget.dart';
 import 'package:app_ban_giay/module/payment_method/screen/widget/payment_success_dialog_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class PaymentMethodScreen extends StatelessWidget {
+class PaymentMethodScreen extends ConsumerWidget {
   const PaymentMethodScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final List<String> name = [
-      "Thanh toán khi nhận hàng",
-      "Mono",
-      "Ngân hàng điện tử",
-    ];
-    final List<String> photo = [
-      "assets/images/cod.png",
-      "assets/images/momo.png",
-      "assets/images/bank.png",
-    ];
+  Widget build(BuildContext context, ref) {
+    final cartP = ref.watch(cartProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Giỏ hàng",
+          "Hình thức thanh toán",
           style: TextStyle(color: Color(0xff222222), fontSize: 20),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(bottom: 20),
-                child: Text(
-                  "Chọn phương thức thanh toán bạn muốn sử dụng",
-                  style: TextStyle(color: Color(0xff222222), fontSize: 13),
-                ),
+      body: cartP.isLoading > 0
+          ? const Center(
+              child: CircularProgressIndicator(
+                color: Color(0xffF15E2C),
               ),
-              Wrap(
-                runSpacing: 20,
-                children: List.generate(
-                    3,
-                    (index) => PaymentMethodItemWidget(
-                          photo: photo[index],
-                          name: name[index],
-                          isSelected: index == 0,
-                        )),
-              ),
-            ],
-          ),
-        ),
-      ),
+            )
+          : (cartP.isLoading < 0
+              ? const Center(
+                  child: Text("đã có lỗi xảy ra, vui lòng thử lại"),
+                )
+              : SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 20),
+                          child: Text(
+                            "Chọn phương thức thanh toán bạn muốn sử dụng",
+                            style: TextStyle(
+                                color: Color(0xff222222), fontSize: 13),
+                          ),
+                        ),
+                        Wrap(
+                          runSpacing: 20,
+                          children: cartP.listPaymentMethod
+                              .map((index) => PaymentMethodItemWidget(
+                                    model: index,
+                                    isSelected: index.id ==
+                                        cartP.selectePaymentMethod.id,
+                                  ))
+                              .toList(),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -67,12 +71,16 @@ class PaymentMethodScreen extends StatelessWidget {
         ),
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
         child: InkWell(
-          onTap: () => showDialog(
-              context: context,
-              barrierColor: Color.fromARGB((0.7 * 255).round(), 0, 0, 0),
-              builder: (context) =>
-                  const PaymentSuccessDialogWidget()).then(
-              (value) => context.go(Func.convertName(const HomeIndex().key))),
+          onTap: () async {
+            ref.read(cartProvider.notifier).saveOrder().then((value) {
+              showDialog(
+                  context: context,
+                  barrierColor: Color.fromARGB((0.7 * 255).round(), 0, 0, 0),
+                  builder: (context) =>
+                      const PaymentSuccessDialogWidget()).then((value) =>
+                  context.go(Func.convertName(const HomeIndex().key)));
+            });
+          },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 52, vertical: 12),
             decoration: const BoxDecoration(

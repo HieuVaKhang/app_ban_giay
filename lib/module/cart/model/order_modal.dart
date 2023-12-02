@@ -1,20 +1,26 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:app_ban_giay/module/cart/model/order_detail_modal.dart';
+import 'package:app_ban_giay/module/cart/model/user_info_model.dart';
+import 'package:app_ban_giay/module/product/model/category_model.dart';
+
 class OrderModal {
   final String? id;
   final String? idUser;
-  final String? idStatus;
-  final String? idPayment;
-  final String? idUserInfo;
+  final CategoryModel? idStatus;
+  final CategoryModel? idPayment;
+  final UserInfoModel? idUserInfo;
+  final OrderDetailModal? detail;
   final double? total;
-  final int? dateCreated;
+  final DateTime? dateCreated;
   OrderModal({
     this.id,
     this.idUser,
     this.idStatus,
     this.idPayment,
     this.idUserInfo,
+    this.detail,
     this.total,
     this.dateCreated,
   });
@@ -22,11 +28,12 @@ class OrderModal {
   OrderModal copyWith({
     String? id,
     String? idUser,
-    String? idStatus,
-    String? idPayment,
-    String? idUserInfo,
+    CategoryModel? idStatus,
+    CategoryModel? idPayment,
+    UserInfoModel? idUserInfo,
+    OrderDetailModal? detail,
     double? total,
-    int? dateCreated,
+    DateTime? dateCreated,
   }) {
     return OrderModal(
       id: id ?? this.id,
@@ -34,6 +41,7 @@ class OrderModal {
       idStatus: idStatus ?? this.idStatus,
       idPayment: idPayment ?? this.idPayment,
       idUserInfo: idUserInfo ?? this.idUserInfo,
+      detail: detail ?? this.detail,
       total: total ?? this.total,
       dateCreated: dateCreated ?? this.dateCreated,
     );
@@ -43,11 +51,12 @@ class OrderModal {
     return <String, dynamic>{
       'id': id,
       'idUser': idUser,
-      'idStatus': idStatus,
-      'idPayment': idPayment,
-      'idUserInfo': idUserInfo,
+      'idStatus': idStatus?.toMap(),
+      'idPayment': idPayment?.toMap(),
+      'idUserInfo': idUserInfo?.toMap(),
+      'detail': detail?.toMap(),
       'total': total,
-      'dateCreated': dateCreated,
+      'dateCreated': dateCreated?.millisecondsSinceEpoch,
     };
   }
 
@@ -55,11 +64,12 @@ class OrderModal {
     return OrderModal(
       id: map['id'] != null ? map['id'] as String : null,
       idUser: map['idUser'] != null ? map['idUser'] as String : null,
-      idStatus: map['idStatus'] != null ? map['idStatus'] as String : null,
-      idPayment: map['idPayment'] != null ? map['idPayment'] as String : null,
-      idUserInfo: map['idUserInfo'] != null ? map['idUserInfo'] as String : null,
+      idStatus: map['idStatus'] != null ? CategoryModel.fromMap(map['idStatus'] as Map<String,dynamic>) : null,
+      idPayment: map['idPayment'] != null ? CategoryModel.fromMap(map['idPayment'] as Map<String,dynamic>) : null,
+      idUserInfo: map['idUserInfo'] != null ? UserInfoModel.fromMap(map['idUserInfo'] as Map<String,dynamic>) : null,
+      detail: map['detail'] != null ? OrderDetailModal.fromMap(map['detail'] as Map<String,dynamic>) : null,
       total: map['total'] != null ? map['total'] as double : null,
-      dateCreated: map['dateCreated'] != null ? map['dateCreated'] as int : null,
+      dateCreated: map['dateCreated'] != null ? DateTime.fromMillisecondsSinceEpoch(map['dateCreated'] as int) : null,
     );
   }
 
@@ -69,7 +79,7 @@ class OrderModal {
 
   @override
   String toString() {
-    return 'OrderModal(id: $id, idUser: $idUser, idStatus: $idStatus, idPayment: $idPayment, idUserInfo: $idUserInfo, total: $total, dateCreated: $dateCreated)';
+    return 'OrderModal(id: $id, idUser: $idUser, idStatus: $idStatus, idPayment: $idPayment, idUserInfo: $idUserInfo, detail: $detail, total: $total, dateCreated: $dateCreated)';
   }
 
   @override
@@ -82,6 +92,7 @@ class OrderModal {
       other.idStatus == idStatus &&
       other.idPayment == idPayment &&
       other.idUserInfo == idUserInfo &&
+      other.detail == detail &&
       other.total == total &&
       other.dateCreated == dateCreated;
   }
@@ -93,6 +104,7 @@ class OrderModal {
       idStatus.hashCode ^
       idPayment.hashCode ^
       idUserInfo.hashCode ^
+      detail.hashCode ^
       total.hashCode ^
       dateCreated.hashCode;
   }

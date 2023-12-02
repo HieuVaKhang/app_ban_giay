@@ -1,16 +1,15 @@
+import 'package:app_ban_giay/libraries/config.dart';
+import 'package:app_ban_giay/module/cart/provider/cart_provider.dart';
+import 'package:app_ban_giay/module/payment_method/model/payment_method_model.dart';
 import 'package:flutter/material.dart';
 
 class PaymentMethodItemWidget extends StatelessWidget {
   const PaymentMethodItemWidget(
-      {Key? key,
-      this.isSelected = false,
-      required this.photo,
-      required this.name})
+      {Key? key, this.isSelected = false, required this.model})
       : super(key: key);
 
   final bool isSelected;
-  final String photo;
-  final String name;
+  final PaymentMethodModel model;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,6 +24,11 @@ class PaymentMethodItemWidget extends StatelessWidget {
                 offset: const Offset(0, 0))
           ]),
       child: InkWell(
+        onTap: () {
+          Config.providerContainer
+              .read(cartProvider.notifier)
+              .changePaymentMethod(model);
+        },
         splashColor: const Color(0xffF15E2C),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -35,15 +39,15 @@ class PaymentMethodItemWidget extends StatelessWidget {
                 clipBehavior: Clip.hardEdge,
                 decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(15))),
-                child: Image.asset(
-                  photo,
+                child: Image.network(
+                  model.photo ?? Config.noImage,
                   fit: BoxFit.cover,
                   width: 40,
                   height: 40,
                 )),
             Expanded(
                 child: Text(
-              name,
+              model.name ?? "",
               style: const TextStyle(color: Colors.black, fontSize: 13),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,

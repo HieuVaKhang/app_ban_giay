@@ -3,6 +3,8 @@ import 'package:app_ban_giay/module/cart/cart_index.dart';
 import 'package:app_ban_giay/module/generate_product/generate_product_index.dart';
 import 'package:app_ban_giay/module/home/home_index.dart';
 import 'package:app_ban_giay/module/news/screen/widget/news_category_screen.dart';
+import 'package:app_ban_giay/module/order/order_index.dart';
+import 'package:app_ban_giay/module/order_detail/order_detail_index.dart';
 import 'package:app_ban_giay/module/payment/payment_index.dart';
 import 'package:app_ban_giay/module/payment_method/payment_method_index.dart';
 import 'package:app_ban_giay/module/product_category/product_category_index.dart';
@@ -28,6 +30,8 @@ final List<GoRoute> danhsachRoute = [
   Func.addGoRouter(const ProductDetailIndex()),
   Func.addGoRouter(const ProductCategoryIndex()),
   Func.addGoRouter(const NewsCategoryScreen()),
+  Func.addGoRouter(const OrderDetailIndex()),
+  Func.addGoRouter(const OrderIndex()),
   Func.addGoRouter(const UserScreen()),
 ];
-String initRouter = Func.convertName(const UserScreen().key);
+String initRouter = Func.convertName(const UserIndex().key);
