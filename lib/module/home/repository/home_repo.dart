@@ -133,107 +133,107 @@ final selectedColorProductDetailProvider = StateProvider<String>((ref) {
   return '';
 });
 
-final futureProductDetailProvider = FutureProvider<ProductModel>((ref) async {
-  final selected = ref.watch(selectedProductDetailProvider);
-  if (selected.isEmpty) {
-    return ProductModel();
-  }
-  final db = FirebaseFirestore.instance;
-  final result =
-      await db.collection('product').doc(selected).get().then((value) async {
-    // final categoryId = await ((value.data()
-    //         as Map<String, dynamic>)['idCategory'] as DocumentReference)
-    //     .get()
-    //     .then((value) => CategoryModel(
-    //           id: value.id,
-    //           name: (value.data() as Map<String, dynamic>)['name'],
-    //         ));
-    // final materialId = await ((value.data()
-    //         as Map<String, dynamic>)['idMaterial'] as DocumentReference)
-    //     .get()
-    //     .then((value) => CategoryModel(
-    //           id: value.id,
-    //           name: (value.data() as Map<String, dynamic>)['name'],
-    //         ));
-    // final genderId = await ((value.data() as Map<String, dynamic>)['idGender']
-    //         as DocumentReference)
-    //     .get()
-    //     .then((value) => CategoryModel(
-    //           id: value.id,
-    //           name: (value.data() as Map<String, dynamic>)['name'],
-    //         ));
-    final variantId = await (db
-            .collection('variant')
-            .where('idProduct', isEqualTo: db.doc('product/${selected}')))
-        .get()
-        .then((value) async {
-      final listVariant = <VariantModel>[];
-      if (value.docs.isNotEmpty) {
-        for (var element in value.docs) {
-          final color = await ((element.data())['idColor'] as DocumentReference)
-              .get()
-              .then((value) => ColorModel(
-                    id: value.id,
-                    name: (value.data() as Map<String, dynamic>)['name'],
-                  ));
-          final size = await ((element.data())['idSize'] as DocumentReference)
-              .get()
-              .then((value) => SizeModel(
-                    id: value.id,
-                    name: (value.data() as Map<String, dynamic>)['name'],
-                  ));
-          listVariant.add(VariantModel(
-              model: ProductModel(
-                photo: element.data()['photo'],
-              ),
-              id: element.id,
-              color: color,
-              size: size,
-              price: 0,
-              salePrice: 0,
-              quantity: 0));
-        }
-      }
-      return listVariant;
-    });
-    print(variantId.toString());
-    final listColor = <ColorModel>[];
-    final listSize = <SizeModel>[];
-    if (variantId.isNotEmpty) {
-      for (var element in variantId) {
-        if (!listColor.contains(element.color)) {
-          listColor.add(element.color);
-        }
-        if (!listSize.contains(element.size)) {
-          listSize.add(element.size);
-        }
-      }
-      ref
-          .read(colorProductDetailProvider.notifier)
-          .update((state) => [...listColor]);
-      ref
-          .read(sizeProductDetailProvider.notifier)
-          .update((state) => [...listSize]);
-    }
-    ref
-        .read(variantProductDetailProvider.notifier)
-        .update((state) => [...variantId]);
-    final valueData = (value.data() as Map<String, dynamic>);
+// final futureProductDetailProvider = FutureProvider<ProductModel>((ref) async {
+//   final selected = ref.watch(selectedProductDetailProvider);
+//   if (selected.isEmpty) {
+//     return ProductModel();
+//   }
+//   final db = FirebaseFirestore.instance;
+//   final result =
+//       await db.collection('product').doc(selected).get().then((value) async {
+//     // final categoryId = await ((value.data()
+//     //         as Map<String, dynamic>)['idCategory'] as DocumentReference)
+//     //     .get()
+//     //     .then((value) => CategoryModel(
+//     //           id: value.id,
+//     //           name: (value.data() as Map<String, dynamic>)['name'],
+//     //         ));
+//     // final materialId = await ((value.data()
+//     //         as Map<String, dynamic>)['idMaterial'] as DocumentReference)
+//     //     .get()
+//     //     .then((value) => CategoryModel(
+//     //           id: value.id,
+//     //           name: (value.data() as Map<String, dynamic>)['name'],
+//     //         ));
+//     // final genderId = await ((value.data() as Map<String, dynamic>)['idGender']
+//     //         as DocumentReference)
+//     //     .get()
+//     //     .then((value) => CategoryModel(
+//     //           id: value.id,
+//     //           name: (value.data() as Map<String, dynamic>)['name'],
+//     //         ));
+//     final variantId = await (db
+//             .collection('variant')
+//             .where('idProduct', isEqualTo: db.doc('product/${selected}')))
+//         .get()
+//         .then((value) async {
+//       final listVariant = <VariantModel>[];
+//       if (value.docs.isNotEmpty) {
+//         for (var element in value.docs) {
+//           final color = await ((element.data())['idColor'] as DocumentReference)
+//               .get()
+//               .then((value) => ColorModel(
+//                     id: value.id,
+//                     name: (value.data() as Map<String, dynamic>)['name'],
+//                   ));
+//           final size = await ((element.data())['idSize'] as DocumentReference)
+//               .get()
+//               .then((value) => SizeModel(
+//                     id: value.id,
+//                     name: (value.data() as Map<String, dynamic>)['name'],
+//                   ));
+//           listVariant.add(VariantModel(
+//               model: ProductModel(
+//                 photo: element.data()['photo'],
+//               ),
+//               id: element.id,
+//               color: color,
+//               size: size,
+//               price: 0,
+//               salePrice: 0,
+//               quantity: 0));
+//         }
+//       }
+//       return listVariant;
+//     });
+//     print(variantId.toString());
+//     final listColor = <ColorModel>[];
+//     final listSize = <SizeModel>[];
+//     if (variantId.isNotEmpty) {
+//       for (var element in variantId) {
+//         if (!listColor.contains(element.color)) {
+//           listColor.add(element.color);
+//         }
+//         if (!listSize.contains(element.size)) {
+//           listSize.add(element.size);
+//         }
+//       }
+//       ref
+//           .read(colorProductDetailProvider.notifier)
+//           .update((state) => [...listColor]);
+//       ref
+//           .read(sizeProductDetailProvider.notifier)
+//           .update((state) => [...listSize]);
+//     }
+//     ref
+//         .read(variantProductDetailProvider.notifier)
+//         .update((state) => [...variantId]);
+//     final valueData = (value.data() as Map<String, dynamic>);
 
-    String productImg = variantId.first.model.photo ?? '';
+//     String productImg = variantId.first.model.photo ?? '';
 
-    return ProductModel(
-      id: value.id,
-      photo: productImg,
-      name: valueData['name'],
-      description: valueData['description'],
-      price: (valueData['price'] as int).toDouble(),
-      salePrice: (valueData['salePrice'] as int).toDouble(),
-    );
-  });
+//     return ProductModel(
+//       id: value.id,
+//       photo: productImg,
+//       name: valueData['name'],
+//       description: valueData['description'],
+//       price: (valueData['price'] as int).toDouble(),
+//       salePrice: (valueData['salePrice'] as int).toDouble(),
+//     );
+//   });
 
-  return result;
-});
+//   return result;
+// });
 
 final colorProductDetailProvider = StateProvider<List<ColorModel>>((ref) {
   return [];

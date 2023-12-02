@@ -3,55 +3,39 @@ import 'dart:convert';
 
 class UserModel {
   final String? id;
-  final String? userName;
-  final String? fullname;
-  final String? password;
   final String? email;
+  final String? fullname;
   UserModel({
     this.id,
-    this.userName,
-    this.fullname,
-    this.password,
     this.email,
+    this.fullname,
   });
-
-  set state(UserModel state) {}
-
-  
 
   UserModel copyWith({
     String? id,
-    String? userName,
-    String? fullname,
-    String? password,
     String? email,
+    String? fullname,
   }) {
     return UserModel(
       id: id ?? this.id,
-      userName: userName ?? this.userName,
-      fullname: fullname ?? this.fullname,
-      password: password ?? this.password,
       email: email ?? this.email,
+      fullname: fullname ?? this.fullname,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'userName': userName,
-      'fullname': fullname,
-      'password': password,
       'email': email,
+      'fullname': fullname,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       id: map['id'] != null ? map['id'] as String : null,
-      userName: map['userName'] != null ? map['userName'] as String : null,
-      fullname: map['fullname'] != null ? map['fullname'] as String : null,
-      password: map['password'] != null ? map['password'] as String : null,
       email: map['email'] != null ? map['email'] as String : null,
+      fullname: map['fullname'] != null ? map['fullname'] as String : null,
     );
   }
 
@@ -60,9 +44,7 @@ class UserModel {
   factory UserModel.fromJson(String source) => UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() {
-    return 'UserModel(id: $id, userName: $userName, fullname: $fullname, password: $password)';
-  }
+  String toString() => 'UserModel(id: $id, email: $email, fullname: $fullname)';
 
   @override
   bool operator ==(covariant UserModel other) {
@@ -70,16 +52,10 @@ class UserModel {
   
     return 
       other.id == id &&
-      other.userName == userName &&
-      other.fullname == fullname &&
-      other.password == password;
+      other.email == email &&
+      other.fullname == fullname;
   }
 
   @override
-  int get hashCode {
-    return id.hashCode ^
-      userName.hashCode ^
-      fullname.hashCode ^
-      password.hashCode;
-  }
+  int get hashCode => id.hashCode ^ email.hashCode ^ fullname.hashCode;
 }
