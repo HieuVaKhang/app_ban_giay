@@ -71,7 +71,6 @@ class OrderDetailScreen extends ConsumerWidget {
                                 ],
                         ),
                         Container(
-                            height: 60,
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             decoration: BoxDecoration(
                                 borderRadius:
