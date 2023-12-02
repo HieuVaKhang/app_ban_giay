@@ -168,6 +168,7 @@ class CartNotifier extends Notifier<CartState> {
   Future<void> getCart() async {
     if (box.keys.isEmpty) {
       state = state.copyWith(listProduct: [], isLoading: 0);
+      return;
     }
     state = state.copyWith(isLoading: 1);
     await db

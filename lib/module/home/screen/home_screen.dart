@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:app_ban_giay/module/user/provider/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:getwidget/getwidget.dart';
@@ -56,23 +59,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 50,
               ),
             ),
-            Container(
-              padding: const EdgeInsets.only(left: 15),
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Good Morning',
-                    style: TextStyle(color: Colors.black, fontSize: 15),
-                  ),
-                  Text(
-                    'User',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ],
-              ),
-            )
+            Consumer(builder: (context, ref, child) {
+              final user = ref.watch(userProvider);
+              return Container(
+                padding: const EdgeInsets.only(left: 15),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Good Morning',
+                      style: TextStyle(color: Colors.black, fontSize: 15),
+                    ),
+                    Text(
+                      user.fullname ?? "",
+                      style: const TextStyle(color: Colors.black),
+                    ),
+                  ],
+                ),
+              );
+            })
           ],
         ),
         actions: [
@@ -317,7 +323,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 context.go(Func.convertName(const NewsCategoryScreen().key));
                 break;
               case 3:
-                context.go(Func.convertName(const UserIndex().key));
+                context.push(Func.convertName(const UserScreen().key));
                 break;
               default:
                 context.push(Func.convertName(const HomeIndex().key));

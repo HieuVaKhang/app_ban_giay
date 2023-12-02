@@ -36,7 +36,6 @@ class OrderNotifier extends Notifier<OrderState> {
         .then((value) async {
       List<OrderModal> list = [];
       if (value.docs.isNotEmpty) {
-        log(value.docs.length.toString());
         for (var element in value.docs) {
           final data = element.data();
           final status = await (element.data()['idStatus'] as DocumentReference)
