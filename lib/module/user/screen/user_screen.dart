@@ -1,7 +1,7 @@
-import 'package:app_ban_giay/module/user/model/user_model.dart';
+import 'package:app_ban_giay/libraries/config.dart';
+import 'package:app_ban_giay/module/order/order_index.dart';
+import 'package:app_ban_giay/module/order/provider/order_provider.dart';
 import 'package:app_ban_giay/module/user/provider/user_provider.dart';
-import 'package:app_ban_giay/module/user/screen/login_screen.dart';
-import 'package:app_ban_giay/module/user/screen/register_screen.dart';
 import 'package:app_ban_giay/module/user/user_index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -70,7 +70,7 @@ class _UserScreenState extends State<UserScreen> {
         body: Padding(
           padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
           child: Consumer(builder: (context, ref, child) {
-            final user = ref.watch(UserProvider);
+            final user = ref.watch(userProvider);
             return Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -119,14 +119,14 @@ class _UserScreenState extends State<UserScreen> {
                       children: [
                         Text(
                           user.fullname ?? "",
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.black,
                               fontSize: 18,
                               fontWeight: FontWeight.w400),
                         ),
                         Text(
                           user.email ?? "",
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.black,
                               fontSize: 13,
                               fontWeight: FontWeight.w400),
@@ -146,7 +146,7 @@ class _UserScreenState extends State<UserScreen> {
                       context: context,
                       builder: (BuildContext context) {
                         return Consumer(builder: (context, ref, child) {
-                          final user = ref.watch(UserProvider);
+                          final user = ref.watch(userProvider);
                           return Container(
                             decoration: const BoxDecoration(
                               borderRadius: BorderRadius.only(
@@ -164,12 +164,12 @@ class _UserScreenState extends State<UserScreen> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
                                         children: [
-                                          SizedBox(
+                                          const SizedBox(
                                             height: 5,
                                           ),
                                           Text(
                                             user.fullname ?? "",
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 30,
                                             ),
                                           ),
@@ -214,7 +214,7 @@ class _UserScreenState extends State<UserScreen> {
                                       children: [
                                         InkWell(
                                           child: Container(
-                                            decoration: BoxDecoration(
+                                            decoration: const BoxDecoration(
                                               color: Colors.white,
                                             ),
                                             width: (MediaQuery.of(context)
@@ -223,7 +223,7 @@ class _UserScreenState extends State<UserScreen> {
                                                 2,
                                             padding: const EdgeInsets.only(
                                                 top: 15, bottom: 15),
-                                            child: Text(
+                                            child: const Text(
                                               'Sửa',
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
@@ -233,30 +233,39 @@ class _UserScreenState extends State<UserScreen> {
                                           ),
                                           onTap: () async {
                                             await updateUser(user.id.toString(),
-                                                user.fullname.toString());
-                                            Navigator.pop(context);
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  'Sửa Thành Công!',
+                                                    _fullNameController.text)
+                                                .then((value) {
+                                              ref
+                                                  .read(userProvider.notifier)
+                                                  .update((state) =>
+                                                      state.copyWith(
+                                                          fullname:
+                                                              _fullNameController
+                                                                  .text));
+                                              Navigator.pop(context);
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                    'Sửa Thành Công!',
+                                                  ),
                                                 ),
-                                              ),
-                                            );
+                                              );
+                                            });
                                           },
                                         ),
                                         InkWell(
                                           child: Container(
-                                            decoration: BoxDecoration(
+                                            decoration: const BoxDecoration(
                                               color: Color(0xFFF15E2C),
                                             ),
                                             width: (MediaQuery.of(context)
                                                     .size
                                                     .width) /
                                                 2,
-                                            padding: EdgeInsets.only(
+                                            padding: const EdgeInsets.only(
                                                 top: 15, bottom: 15),
-                                            child: Text(
+                                            child: const Text(
                                               'Huỷ',
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
@@ -302,7 +311,12 @@ class _UserScreenState extends State<UserScreen> {
                 //   height: 30,
                 // ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Config.providerContainer
+                        .read(orderNotifierProvider.notifier)
+                        .getOrder();
+                    context.push(Func.convertName(const OrderIndex().key));
+                  },
                   child: Container(
                     height: 50,
                     child: Row(
@@ -310,7 +324,7 @@ class _UserScreenState extends State<UserScreen> {
                       children: [
                         const InkWell(
                             child: Text(
-                          'Địa chỉ',
+                          'Đơn hàng',
                           style: TextStyle(fontSize: 13, color: Colors.black),
                         )),
                         Container(
@@ -331,20 +345,20 @@ class _UserScreenState extends State<UserScreen> {
                         context: context,
                         builder: (BuildContext context) {
                           return Container(
-                            decoration: BoxDecoration(),
+                            decoration: const BoxDecoration(),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 InkWell(
                                   child: Container(
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       color: Colors.white,
                                     ),
                                     width:
                                         (MediaQuery.of(context).size.width) / 2,
                                     padding: const EdgeInsets.only(
                                         top: 15, bottom: 15),
-                                    child: Text(
+                                    child: const Text(
                                       'Đăng xuất',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
@@ -358,7 +372,7 @@ class _UserScreenState extends State<UserScreen> {
                                         const UserIndex().key));
                                     Navigator.pop(context);
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
+                                      const SnackBar(
                                         content: Text(
                                           'Đăng xuất thành công!',
                                         ),
@@ -368,14 +382,14 @@ class _UserScreenState extends State<UserScreen> {
                                 ),
                                 InkWell(
                                   child: Container(
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       color: Color(0xFFF15E2C),
                                     ),
                                     width:
                                         (MediaQuery.of(context).size.width) / 2,
-                                    padding:
-                                        EdgeInsets.only(top: 15, bottom: 15),
-                                    child: Text(
+                                    padding: const EdgeInsets.only(
+                                        top: 15, bottom: 15),
+                                    child: const Text(
                                       'Huỷ',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
@@ -397,7 +411,7 @@ class _UserScreenState extends State<UserScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             'Đăng xuất',
                             style: TextStyle(fontSize: 13, color: Colors.black),
                           ),
@@ -417,11 +431,3 @@ class _UserScreenState extends State<UserScreen> {
         ));
   }
 }
-
-final UserProvider = StateProvider<UserModel>((ref) {
-  return UserModel(
-      id: 'nYMTbRoUTaWSS23PH7DGd3N8uz93',
-      email: '123@123.com',
-      fullname: 'tesst fullname');
-  // return UserModel(id: '', email: '', fullname: '');
-});
