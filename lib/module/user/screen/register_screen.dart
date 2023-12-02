@@ -136,7 +136,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         
                     await _auth
                         .addUser(
-                            id, _fullNameController.text, _emailController.text)
+                            id, _emailController.text, _fullNameController.text)
                         .then((value) {
                       print('Đăng ký thành công!');
                       ScaffoldMessenger.of(context).showSnackBar(
